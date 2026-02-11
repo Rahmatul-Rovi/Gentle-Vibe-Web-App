@@ -12,6 +12,8 @@ import ManagerOrders from "../pages/manager/ManagerOrders";
 import AddProduct from "../pages/admin/AddProduct";
 import ProductList from "../components/ProductList";
 import ProductDetails from "../components/ProductDetails";
+import CartPage from "../pages/CartPage";
+import Checkout from "../pages/Checkout";
 
 const router = createBrowserRouter([
   {
@@ -39,6 +41,14 @@ const router = createBrowserRouter([
       {
         path: "product/:id",
         element: <ProductDetails></ProductDetails>,
+      },
+      {
+        path: "cart",
+        element: <CartPage></CartPage>,
+      },
+      {
+        path: "checkout",
+        element: <Checkout></Checkout>
       },
     ],
   },
