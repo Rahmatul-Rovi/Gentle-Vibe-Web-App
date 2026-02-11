@@ -18,7 +18,7 @@ const Hero = () => {
       <div className="container mx-auto px-6 relative z-10">
         <div className="max-w-xl text-white">
           <span className="uppercase tracking-widest text-sm mb-4 block font-semibold">
-            New Arrival 2024
+            New Arrival 2026
           </span>
           <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
             Elevate Your <br /> 

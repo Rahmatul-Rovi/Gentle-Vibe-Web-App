@@ -1,27 +1,69 @@
-import { Routes, Route } from "react-router-dom";
-import Home from "../pages/user/Home";
+import { createBrowserRouter } from "react-router-dom";
+import MainLayout from "../layouts/MainLayout";
+import AdminLayout from "../layouts/AdminLayout";
+
+// Pages
+import Hero from "../components/Hero";
+import Categories from "../components/Categories";
 import Login from "../pages/Login";
-// Manager & Admin Pages (Pore banabo, ekhon just placeholder)
-const ManagerDashboard = () => <div className="p-10">Manager Dashboard</div>;
-const AdminDashboard = () => <div className="p-10 text-red-600">Admin Analytics Panel</div>;
+import Register from "../pages/Register";
+import AdminDashboard from "../pages/admin/AdminDashboard";
+import ManagerOrders from "../pages/manager/ManagerOrders";
+import AddProduct from "../pages/admin/AddProduct";
 
-const AppRoutes = () => {
-  return (
-    <Routes>
-      {/* Public & User Routes */}
-      <Route path="/" element={<Home />} />
-      <Route path="/login" element={<Login />} />
-      
-      {/* Manager Routes */}
-      <Route path="/manager/dashboard" element={<ManagerDashboard />} />
-      
-      {/* Admin Routes */}
-      <Route path="/admin/dashboard" element={<AdminDashboard />} />
-      
-      {/* 404 Page */}
-      <Route path="*" element={<h1 className="text-center py-20">404 - Not Found</h1>} />
-    </Routes>
-  );
-};
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <MainLayout />,
+    children: [
+      {
+        path: "/",
+        element: (
+          <>
+            <Hero />
+            <Categories />
+          </>
+        ),
+      },
+      {
+        path: "login",
+        element: <Login />,
+      },
+      {
+        path: "register",
+        element: <Register />,
+      },
+    ],
+  },
+  {
+    path: "/admin",
+    element: <AdminLayout />,
+    children: [
+      {
+        index: true, // Mane /admin e thakle eta dekhabe
+        element: <AdminDashboard />,
+      },
+      { path: "add-product", element: <AddProduct></AddProduct> },
+      {
+        path: "users",
+        element: <div className="p-4">User Management</div>,
+      },
+    ],
+  },
+  {
+    path: "/manager",
+    element: <AdminLayout />, // Manager-o Sidebar layout use korbe
+    children: [
+      {
+        index: true,
+        element: <ManagerOrders />,
+      },
+    ],
+  },
+  {
+    path: "*",
+    element: <div className="h-screen flex items-center justify-center">404 - Not Found</div>,
+  },
+]);
 
-export default AppRoutes;
+export default router;
