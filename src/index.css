@@ -1,0 +1,16 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+/* Theme override for consistent professional look */
+:root, [data-theme] {
+  background-color: white !important;
+  color: #111111 !important;
+}
+
+@theme {
+  --font-sans: "Inter", "sans-serif";
+}
+
+.nav-link {
+  @apply text-[13px] font-medium uppercase tracking-wider hover:text-gray-500 transition-colors;
+}
