@@ -4,12 +4,16 @@ import './index.css'
 import { RouterProvider } from 'react-router-dom'
 import router from './routes/APPRoutes' 
 import AuthProvider from './providers/AuthProvider' 
+// 1. Import your new CartProvider
+import { CartProvider } from './context/CartContext' 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    {/* Pura app ekhon AuthProvider er bhetore */}
     <AuthProvider>
-      <RouterProvider router={router} />
+      {/* 2. Wrap the RouterProvider with CartProvider */}
+      <CartProvider>
+        <RouterProvider router={router} />
+      </CartProvider>
     </AuthProvider>
   </React.StrictMode>,
 )

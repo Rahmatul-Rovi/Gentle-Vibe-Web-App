@@ -10,6 +10,8 @@ import Register from "../pages/Register";
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import ManagerOrders from "../pages/manager/ManagerOrders";
 import AddProduct from "../pages/admin/AddProduct";
+import ProductList from "../components/ProductList";
+import ProductDetails from "../components/ProductDetails";
 
 const router = createBrowserRouter([
   {
@@ -22,6 +24,7 @@ const router = createBrowserRouter([
           <>
             <Hero />
             <Categories />
+            <ProductList></ProductList>
           </>
         ),
       },
@@ -32,6 +35,10 @@ const router = createBrowserRouter([
       {
         path: "register",
         element: <Register />,
+      },
+      {
+        path: "product/:id",
+        element: <ProductDetails></ProductDetails>,
       },
     ],
   },
@@ -62,7 +69,11 @@ const router = createBrowserRouter([
   },
   {
     path: "*",
-    element: <div className="h-screen flex items-center justify-center">404 - Not Found</div>,
+    element: (
+      <div className="h-screen flex items-center justify-center">
+        404 - Not Found
+      </div>
+    ),
   },
 ]);
 

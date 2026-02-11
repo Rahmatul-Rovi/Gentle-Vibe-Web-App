@@ -1,10 +1,15 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, ShoppingBag, User, Menu, LogOut } from 'lucide-react';
-import { AuthContext } from '../providers/AuthProvider'; // Context import koro
+import { AuthContext } from '../providers/AuthProvider';
+import { useCart } from '../context/CartContext'; // 1. Cart hook import koro
 
 const Navbar = () => {
-  const { user, logOut } = useContext(AuthContext); // Context theke data nao
+  const { user, logOut } = useContext(AuthContext);
+  const { cart } = useCart(); // 2. Cart data nao
+
+  // 3. Total items calculation
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   const handleLogOut = () => {
     logOut()
@@ -48,12 +53,10 @@ const Navbar = () => {
 
           {/* Action Icons Section */}
           <div className="navbar-end gap-2 md:gap-5">
-            {/* Search */}
             <button className="p-2 hover:bg-gray-50 rounded-full transition-all hidden sm:block">
               <Search size={20} strokeWidth={1.5} />
             </button>
             
-            {/* --- Conditional Login/User Profile Section --- */}
             {user ? (
               <div className="dropdown dropdown-end">
                 <label tabIndex={0} className="btn btn-ghost btn-circle avatar border border-gray-100">
@@ -82,13 +85,15 @@ const Navbar = () => {
               </Link>
             )}
 
-            {/* Shopping Bag */}
-            <button className="p-2 hover:bg-gray-50 rounded-full transition-all relative">
+            {/* Shopping Bag - Now Dynamic! */}
+            <Link to="/cart" className="p-2 hover:bg-gray-50 rounded-full transition-all relative">
               <ShoppingBag size={20} strokeWidth={1.5} />
-              <span className="absolute top-1 right-1 bg-black text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
-                0
-              </span>
-            </button>
+              {totalItems > 0 && (
+                <span className="absolute top-1 right-1 bg-black text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
+                  {totalItems}
+                </span>
+              )}
+            </Link>
           </div>
 
         </div>
