@@ -3,32 +3,46 @@ import { useCart } from '../context/CartContext';
 import axios from 'axios';
 
 const Checkout = () => {
-    const { cart } = useCart(); // ❌ totalAmount নিলাম না
+    const { cart } = useCart();
     const [address, setAddress] = useState({ name: '', phone: '', city: '', address: '' });
 
-    // ✅ Calculate total here (safe way)
-    const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+    // ✅ Calculation-ke Number() diye safe kora holo jate 'null' na hoy
+    const subtotal = cart.reduce((total, item) => {
+        const itemPrice = Number(item.price) || 0;
+        const itemQty = Number(item.quantity) || 1;
+        return total + (itemPrice * itemQty);
+    }, 0);
+    
     const shipping = 70;
     const finalAmount = subtotal + shipping;
 
     const handlePayment = async (e) => {
         e.preventDefault();
 
-        console.log("Final Amount Sent:", finalAmount); // 🧪 debug
+        // 🛑 Final validation: City ba onno field empty thakle backend-e pathabo na
+        if (!address.city.trim() || !address.phone.trim()) {
+            alert("Please fill in City and Phone Number!");
+            return;
+        }
+
+        const orderData = {
+            cart: cart,
+            address: address, // state theke city auto jabe ekhon
+            totalAmount: Number(finalAmount), 
+            userId: "USER_ID_FROM_AUTH"
+        };
+
+        console.log("Sending to Backend:", orderData);
 
         try {
-            const res = await axios.post('http://localhost:5000/api/order/init', {
-                cart,
-                address,
-                totalAmount: finalAmount, // ✅ always number
-                userId: "USER_ID_FROM_AUTH"
-            });
+            const res = await axios.post('http://localhost:5000/api/order/init', orderData);
 
             if (res.data?.url) {
-                window.location.replace(res.data.url); // SSL gateway redirect
+                window.location.replace(res.data.url);
             }
         } catch (err) {
             console.error("Payment Error:", err?.response?.data || err.message);
+            alert("Payment Initiation Failed: " + (err?.response?.data?.message || "Server Error"));
         }
     };
 
@@ -41,21 +55,25 @@ const Checkout = () => {
                     required
                     className="border p-4 uppercase text-xs font-bold tracking-widest"
                     placeholder="Full Name"
+                    value={address.name}
                     onChange={(e) => setAddress({ ...address, name: e.target.value })}
                 />
 
                 <input
                     required
+                    type="text"
                     className="border p-4 uppercase text-xs font-bold tracking-widest"
                     placeholder="Phone Number"
+                    value={address.phone}
                     onChange={(e) => setAddress({ ...address, phone: e.target.value })}
                 />
 
-                {/* ✅ City field add করা হলো */}
+                {/* ✅ City field - value={address.city} add kora hoyeche mapping thik korar jonno */}
                 <input
                     required
                     className="border p-4 uppercase text-xs font-bold tracking-widest md:col-span-2"
-                    placeholder="City"
+                    placeholder="City (e.g. Dhaka)"
+                    value={address.city}
                     onChange={(e) => setAddress({ ...address, city: e.target.value })}
                 />
 
@@ -63,6 +81,7 @@ const Checkout = () => {
                     required
                     className="border p-4 uppercase text-xs font-bold tracking-widest md:col-span-2"
                     placeholder="Full Address"
+                    value={address.address}
                     onChange={(e) => setAddress({ ...address, address: e.target.value })}
                 />
 
