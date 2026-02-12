@@ -1,46 +1,44 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import MainLayout from "./layouts/MainLayout";
+
 import AdminLayout from "./layouts/AdminLayout";
 
 // Pages
-import Hero from "./components/Hero";
-import Categories from "./components/Categories";
 import Login from "./pages/Login";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import ManagerOrders from "./pages/manager/ManagerOrders";
+// Notun Admin Pages
+import AdminProfile from "./pages/admin/AdminProfile"; 
+import MakeAdmin from "./pages/admin/MakeAdmin"; 
+import Home from "./pages/Home";
+import MainLayout from "./layouts/MainLayout";
 
 function App() {
   return (
     <Router>
       <Routes>
         
-        {/* 1. User & Public Routes (Normal Navbar thakbe) */}
-        <Route path="/" element={<MainLayout />}>
-          <Route index element={
-            <>
-              <Hero />
-              <Categories />
-            </>
-          } />
+        {/* 1. User & Public Routes */}
+        <Route path="/" element={<MainLayout></MainLayout>}>
+          <Route index element={<Home></Home>} /> 
           <Route path="login" element={<Login />} />
-          {/* Pore eikhane Shop, Cart, Profile route add hobe */}
         </Route>
 
-        {/* 2. Admin Routes (Sidebar thakbe) */}
+        {/* 2. Admin Routes */}
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
-          <Route path="users" element={<div className="p-4 font-bold">User Management coming soon...</div>} />
-          <Route path="settings" element={<div className="p-4 font-bold">Admin Settings coming soon...</div>} />
+          <Route path="users" element={<div className="p-4 font-bold uppercase">User Management</div>} />
+          <Route path="profile" element={<AdminProfile />} /> {/* Admin Profile Route */}
+          <Route path="make-admin" element={<MakeAdmin />} /> {/* Make Admin Route */}
+          <Route path="settings" element={<div className="p-4 font-bold uppercase">Settings</div>} />
         </Route>
 
-        {/* 3. Manager Routes (Sidebar thakbe) */}
+        {/* 3. Manager Routes */}
         <Route path="/manager" element={<AdminLayout />}>
           <Route index element={<ManagerOrders />} />
-          {/* Manager-er aro dorkari page thakle eikhane add hobe */}
         </Route>
 
         {/* 4. 404 Route */}
-        <Route path="*" element={<div className="h-screen flex items-center justify-center font-bold">404 - Page Not Found</div>} />
+        <Route path="*" element={<div className="h-screen flex items-center justify-center font-black uppercase tracking-widest">404 - Page Not Found</div>} />
 
       </Routes>
     </Router>

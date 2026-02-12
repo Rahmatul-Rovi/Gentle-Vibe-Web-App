@@ -3,6 +3,7 @@ import axios from 'axios';
 import { ShoppingCart, Eye, ArrowRight } from 'lucide-react';
 import BrandStory from '../components/BrandStory'; 
 import Hero from '../components/Hero';
+import Categories from '../components/Categories';
 
 const Home = () => {
     const [products, setProducts] = useState([]);
@@ -10,13 +11,16 @@ const Home = () => {
 
     useEffect(() => {
         const getProducts = async () => {
+            console.log("Home Page Load Hoise!");
             try {
+                // Backend URL check koro, local cholle 5000 thik ache
                 const res = await axios.get('http://localhost:5000/api/products');
-                // Home page e shob na dekhiye top 8 products dekhale bhalo hoy
-                setProducts(res.data.slice(0, 8)); 
+                if (res.data) {
+                    setProducts(res.data.slice(0, 8)); 
+                }
                 setLoading(false);
             } catch (err) {
-                console.error("Data fetch korte error:", err);
+                console.error("Data fetch error:", err);
                 setLoading(false);
             }
         };
@@ -26,9 +30,12 @@ const Home = () => {
     return (
         <div className="bg-white">
             {/* 1. HERO SECTION */}
-            <Hero></Hero>
+            <Hero />
 
-            {/* 2. PRODUCT SECTION (New Arrivals) */}
+            {/* 2. CATEGORIES SECTION */}
+            <Categories />
+
+            {/* 3. PRODUCT SECTION (New Arrivals) */}
             <div className="max-w-7xl mx-auto px-6 py-24">
                 <div className="flex justify-between items-end mb-16">
                     <div>
@@ -51,49 +58,53 @@ const Home = () => {
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-8 gap-y-16">
-                        {products.map((product) => (
-                            <div key={product._id} className="group">
-                                {/* Image Wrapper */}
-                                <div className="relative aspect-[3/4] overflow-hidden bg-[#f3f3f3] mb-6">
-                                    <img 
-                                        src={product.images[0]} 
-                                        alt={product.name} 
-                                        className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-105"
-                                    />
-                                    {/* Overlay Buttons */}
-                                    <div className="absolute bottom-6 left-0 right-0 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 flex items-center justify-center gap-3">
-                                        <button className="bg-white text-black p-4 shadow-xl hover:bg-black hover:text-white transition-all">
-                                            <ShoppingCart size={18} />
-                                        </button>
-                                        <button className="bg-white text-black p-4 shadow-xl hover:bg-black hover:text-white transition-all">
-                                            <Eye size={18} />
-                                        </button>
+                        {products.length > 0 ? (
+                            products.map((product) => (
+                                <div key={product._id} className="group">
+                                    <div className="relative aspect-[3/4] overflow-hidden bg-[#f3f3f3] mb-6">
+                                        <img 
+                                            // Safety Check: Image array empty thakle default image dekhabe
+                                            src={product.images && product.images.length > 0 ? product.images[0] : 'https://via.placeholder.com/400x500?text=No+Image'} 
+                                            alt={product.name} 
+                                            className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-105"
+                                        />
+                                        <div className="absolute bottom-6 left-0 right-0 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 flex items-center justify-center gap-3">
+                                            <button className="bg-white text-black p-4 shadow-xl hover:bg-black hover:text-white transition-all">
+                                                <ShoppingCart size={18} />
+                                            </button>
+                                            <button className="bg-white text-black p-4 shadow-xl hover:bg-black hover:text-white transition-all">
+                                                <Eye size={18} />
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
 
-                                {/* Product Info */}
-                                <div className="space-y-2 text-center">
-                                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-[0.2em]">{product.category}</p>
-                                    <h3 className="text-sm font-black uppercase tracking-tight leading-none group-hover:text-gray-600 transition-colors">
-                                        {product.name}
-                                    </h3>
-                                    <div className="flex gap-3 items-center justify-center">
-                                        <span className="font-bold text-lg text-black">৳{product.price}</span>
-                                        {product.discountPrice && (
-                                            <span className="text-xs text-gray-400 line-through">৳{product.discountPrice}</span>
-                                        )}
+                                    <div className="space-y-2 text-center">
+                                        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-[0.2em]">{product.category}</p>
+                                        <h3 className="text-sm font-black uppercase tracking-tight leading-none group-hover:text-gray-600 transition-colors">
+                                            {product.name}
+                                        </h3>
+                                        <div className="flex gap-3 items-center justify-center">
+                                            <span className="font-bold text-lg text-black">৳{product.price}</span>
+                                            {product.discountPrice && (
+                                                <span className="text-xs text-gray-400 line-through">৳{product.discountPrice}</span>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
+                            ))
+                        ) : (
+                            <div className="col-span-full text-center py-10">
+                                <p className="text-gray-400 uppercase font-black">No products found in Database</p>
                             </div>
-                        ))}
+                        )}
                     </div>
                 )}
             </div>
 
-            {/* 3. BRAND STORY SECTION */}
+            {/* 4. BRAND STORY SECTION */}
             <BrandStory />
 
-            {/* 4. NEWSLETTER (Extra Premium Touch) */}
+            {/* 5. NEWSLETTER SECTION */}
             <div className="bg-slate-50 py-20 border-t border-slate-100">
                 <div className="max-w-2xl mx-auto px-6 text-center">
                     <h3 className="text-2xl font-black uppercase italic mb-2 tracking-tighter">Don't miss a drop</h3>

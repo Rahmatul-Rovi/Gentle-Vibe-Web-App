@@ -19,6 +19,7 @@ import AdminOrders from "../pages/admin/AdminOrders";
 import AdminUsers from "../pages/admin/AdminUsers";
 import MakeAdmin from "../pages/admin/MakeAdmin";
 import AdminProfile from "../pages/admin/AdminProfile";
+import Home from "../pages/Home";
 
 const router = createBrowserRouter([
   {
@@ -26,14 +27,8 @@ const router = createBrowserRouter([
     element: <MainLayout />,
     children: [
       {
-        path: "/",
-        element: (
-          <>
-            <Hero />
-            <Categories />
-            <ProductList></ProductList>
-          </>
-        ),
+        index: true,
+        element: <Home></Home>
       },
       {
         path: "login",
@@ -68,23 +63,23 @@ const router = createBrowserRouter([
       { path: "add-product", element: <AddProduct></AddProduct> },
      
       {
-       path: "/admin/all-products",
+       path: "all-products",
        element: <AdminProducts></AdminProducts>
       },
       {
-        path: "/admin/orders",
+        path: "orders",
         element: <AdminOrders></AdminOrders>
       },
       {
-        path: "/admin/users",
+        path: "users",
         element: <AdminUsers></AdminUsers>
       },
       {
-        path: "/admin/make-admin",
+        path: "make-admin",
         element: <MakeAdmin></MakeAdmin>
       },
       {
-        path: "/admin/profile",
+        path: "profile",
         element: <AdminProfile></AdminProfile>
       }
     ],
