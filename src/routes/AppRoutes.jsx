@@ -15,6 +15,10 @@ import ProductDetails from "../components/ProductDetails";
 import CartPage from "../pages/CartPage";
 import Checkout from "../pages/Checkout";
 import AdminProducts from "../pages/admin/AdminProducts";
+import AdminOrders from "../pages/admin/AdminOrders";
+import AdminUsers from "../pages/admin/AdminUsers";
+import MakeAdmin from "../pages/admin/MakeAdmin";
+import AdminProfile from "../pages/admin/AdminProfile";
 
 const router = createBrowserRouter([
   {
@@ -62,14 +66,27 @@ const router = createBrowserRouter([
         element: <AdminDashboard />,
       },
       { path: "add-product", element: <AddProduct></AddProduct> },
-      {
-        path: "users",
-        element: <div className="p-4">User Management</div>,
-      },
+     
       {
        path: "/admin/all-products",
        element: <AdminProducts></AdminProducts>
       },
+      {
+        path: "/admin/orders",
+        element: <AdminOrders></AdminOrders>
+      },
+      {
+        path: "/admin/users",
+        element: <AdminUsers></AdminUsers>
+      },
+      {
+        path: "/admin/make-admin",
+        element: <MakeAdmin></MakeAdmin>
+      },
+      {
+        path: "/admin/profile",
+        element: <AdminProfile></AdminProfile>
+      }
     ],
   },
   {

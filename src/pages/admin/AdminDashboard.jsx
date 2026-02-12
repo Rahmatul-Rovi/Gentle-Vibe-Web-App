@@ -73,6 +73,7 @@ const AdminDashboard = () => {
               <span className="w-3 h-3 rounded-full bg-cyan-400"></span>
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Orders</span>
             </div>
+            
           </div>
         </div>
 
