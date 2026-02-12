@@ -70,7 +70,7 @@ const Navbar = () => {
                     <p className="font-bold text-xs truncate">{user?.displayName || "Gentle User"}</p>
                   </li>
                   <hr className="border-gray-50 my-1" />
-                  <li><Link to="/dashboard" className="text-xs uppercase font-bold py-3">Dashboard</Link></li>
+                  <li><Link to="/user/profile" className="text-xs uppercase font-bold py-3">Dashboard</Link></li>
                   <li>
                     <button onClick={handleLogOut} className="text-xs uppercase font-bold py-3 text-red-500">
                       <LogOut size={14} /> Logout

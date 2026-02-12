@@ -24,111 +24,49 @@ import UserLayout from "../layouts/UserLayout";
 import UserDashboard from "../pages/user/UserDashboard";
 import UserProfile from "../pages/user/UserProfile";
 import UserOrder from "../pages/user/UserOrder.jsx";
+// Upore baki import gulor niche eigula add koro:
+import UserRoute from "../routes/UserRoute"; 
+import AdminRoute from "../routes/AdminRoute";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
     children: [
-      {
-        index: true,
-        element: <Home></Home>
-      },
-      {
-        path: "login",
-        element: <Login />,
-      },
-      {
-        path: "register",
-        element: <Register />,
-      },
-      {
-        path: "product/:id",
-        element: <ProductDetails></ProductDetails>,
-      },
-      {
-  path: "shop", 
-  element: <ProductList></ProductList>
-},
-      {
-        path: "cart",
-        element: <CartPage></CartPage>,
-      },
-      {
-        path: "checkout",
-        element: <Checkout></Checkout>
-      },
+      { index: true, element: <Home /> },
+      { path: "login", element: <Login /> },
+      { path: "register", element: <Register /> },
+      { path: "product/:id", element: <ProductDetails /> },
+      { path: "shop", element: <ProductList /> },
+      { path: "cart", element: <CartPage /> },
+      { path: "checkout", element: <UserRoute><Checkout /></UserRoute> }, // Checkout e UserRoute must
     ],
   },
   {
     path: "/admin",
-    element: <AdminLayout />,
+    element: <AdminRoute><AdminLayout /></AdminRoute>, // Ekhon keu manually likhleo dhukte parbe na
     children: [
-      {
-        index: true, // Mane /admin e thakle eta dekhabe
-        element: <AdminDashboard />,
-      },
-      { path: "add-product", element: <AddProduct></AddProduct> },
-     
-      {
-       path: "all-products",
-       element: <AdminProducts></AdminProducts>
-      },
-      {
-        path: "orders",
-        element: <AdminOrders></AdminOrders>
-      },
-      {
-        path: "users",
-        element: <AdminUsers></AdminUsers>
-      },
-      {
-        path: "make-admin",
-        element: <MakeAdmin></MakeAdmin>
-      },
-      {
-        path: "profile",
-        element: <AdminProfile></AdminProfile>
-      }
+      { index: true, element: <AdminDashboard /> },
+      { path: "add-product", element: <AddProduct /> },
+      { path: "all-products", element: <AdminProducts /> },
+      { path: "orders", element: <AdminOrders /> },
+      { path: "users", element: <AdminUsers /> },
+      { path: "make-admin", element: <MakeAdmin /> },
+      { path: "profile", element: <AdminProfile /> }
     ],
   },
-  {
-    path: "/manager",
-    element: <AdminLayout />, // Manager-o Sidebar layout use korbe
-    children: [
-      {
-        index: true,
-        element: <ManagerOrders />,
-      },
-    ],
-  },
-
-  // User Dashboard
   {
     path: "/user",
-    element: <UserLayout></UserLayout>,
+    element: <UserRoute><UserLayout /></UserRoute>, // Normal logged in user-er dashboard
     children: [
-      {
-        index: true, 
-        element: <UserDashboard></UserDashboard>,
-      },
-      {
-        path: "profile",
-        element: <UserProfile></UserProfile>
-      },
-      {
-        path: "orders",
-        element: <UserOrder></UserOrder>
-      }
- ] 
-},
+      { index: true, element: <UserDashboard /> },
+      { path: "profile", element: <UserProfile /> },
+      { path: "orders", element: <UserOrder /> }
+    ] 
+  },
   {
     path: "*",
-    element: (
-      <div className="h-screen flex items-center justify-center">
-        404 - Not Found
-      </div>
-    ),
+    element: <div className="h-screen flex items-center justify-center font-black">404 - NOT FOUND</div>,
   },
 ]);
 
