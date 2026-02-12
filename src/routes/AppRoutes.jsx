@@ -14,6 +14,7 @@ import ProductList from "../components/ProductList";
 import ProductDetails from "../components/ProductDetails";
 import CartPage from "../pages/CartPage";
 import Checkout from "../pages/Checkout";
+import AdminProducts from "../pages/admin/AdminProducts";
 
 const router = createBrowserRouter([
   {
@@ -64,6 +65,10 @@ const router = createBrowserRouter([
       {
         path: "users",
         element: <div className="p-4">User Management</div>,
+      },
+      {
+       path: "/admin/all-products",
+       element: <AdminProducts></AdminProducts>
       },
     ],
   },
