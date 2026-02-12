@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ShoppingBag, Plus, Minus } from 'lucide-react';
 
-const Home = () => {
+const ProductCard = () => {
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
@@ -27,18 +27,16 @@ const Home = () => {
     };
 
     // Decrease function (Fixing the delete issue)
-   const handleDecrease = (id, e) => {
-  e.stopPropagation();
-  setProducts(prev =>
-    prev.map(item => {
-      if (item._id === id) {
-        const newQty = item.qty - 1;
-        return { ...item, qty: newQty < 1 ? 1 : newQty };
-      }
-      return item;
-    })
-  );
-};
+    const handleDecrease = (id, e) => {
+        e.stopPropagation(); // Khub dorkari jate onno kisu trigger na hoy
+        setProducts(prev => prev.map(item => {
+            if (item._id === id) {
+                // Quantity 1 er boro holei shudhu kombe
+                return { ...item, qty: item.qty > 1 ? item.qty - 1 : 1 };
+            }
+            return item;
+        }));
+    };
 
     return (
         <div className="max-w-7xl mx-auto px-4 py-10">
@@ -94,4 +92,4 @@ const Home = () => {
     );
 };
 
-export default Home;
+export default ProductCard;

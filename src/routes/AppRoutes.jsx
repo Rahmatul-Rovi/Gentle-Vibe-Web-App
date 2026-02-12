@@ -20,6 +20,10 @@ import AdminUsers from "../pages/admin/AdminUsers";
 import MakeAdmin from "../pages/admin/MakeAdmin";
 import AdminProfile from "../pages/admin/AdminProfile";
 import Home from "../pages/Home";
+import UserLayout from "../layouts/UserLayout";
+import UserDashboard from "../pages/user/UserDashboard";
+import UserProfile from "../pages/user/UserProfile";
+import UserOrder from "../pages/user/UserOrder.jsx";
 
 const router = createBrowserRouter([
   {
@@ -98,6 +102,26 @@ const router = createBrowserRouter([
       },
     ],
   },
+
+  // User Dashboard
+  {
+    path: "/user",
+    element: <UserLayout></UserLayout>,
+    children: [
+      {
+        index: true, 
+        element: <UserDashboard></UserDashboard>,
+      },
+      {
+        path: "profile",
+        element: <UserProfile></UserProfile>
+      },
+      {
+        path: "orders",
+        element: <UserOrder></UserOrder>
+      }
+ ] 
+},
   {
     path: "*",
     element: (
