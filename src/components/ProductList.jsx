@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ShoppingBag, Star } from 'lucide-react';
-// 1. Import Link from react-router-dom
 import { Link } from 'react-router-dom'; 
 
 const ProductList = () => {

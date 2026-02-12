@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const MainLayout = () => {
   return (
@@ -8,7 +9,7 @@ const MainLayout = () => {
       <main className="flex-grow">
         <Outlet /> {/* Eikhane shob page load hobe */}
       </main>
-      {/* Footer pore add korbo */}
+     <Footer></Footer>
     </div>
   );
 };
