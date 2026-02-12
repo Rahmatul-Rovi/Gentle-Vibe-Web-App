@@ -2,18 +2,24 @@ import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, ShoppingBag, User, Menu, LogOut } from 'lucide-react';
 import { AuthContext } from '../providers/AuthProvider';
-import { useCart } from '../context/CartContext'; // 1. Cart hook import koro
+import { useCart } from '../context/CartContext';
 
 const Navbar = () => {
   const { user, logOut } = useContext(AuthContext);
-  const { cart } = useCart(); // 2. Cart data nao
+  const { cart } = useCart();
 
-  // 3. Total items calculation
+  // Total items calculation for cart badge
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   const handleLogOut = () => {
     logOut()
-      .then(() => alert("Logged Out!"))
+      .then(() => {
+        // LocalStorage clean kora jeno refresh dileo data na thake
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+        // Page full refresh kora security-r jonno bhalo
+        window.location.href = "/login";
+      })
       .catch(err => console.log(err));
   };
 
@@ -67,12 +73,23 @@ const Navbar = () => {
                 <ul tabIndex={0} className="mt-3 z-[1] p-4 shadow-2xl menu menu-sm dropdown-content bg-white rounded-none w-52 border border-gray-50">
                   <li className="mb-2 px-2 py-1">
                     <span className="text-[10px] font-bold uppercase text-gray-400">Account</span>
-                    <p className="font-bold text-xs truncate">{user?.displayName || "Gentle User"}</p>
+                    {/* User name display from context/localstorage */}
+                    <p className="font-bold text-xs truncate">{user?.name || user?.displayName || "Gentle User"}</p>
                   </li>
                   <hr className="border-gray-50 my-1" />
-                  <li><Link to="/user/profile" className="text-xs uppercase font-bold py-3">Dashboard</Link></li>
+                  
+                  {/* DYNAMIC DASHBOARD LINK: Role check kore link set kora hoyeche */}
                   <li>
-                    <button onClick={handleLogOut} className="text-xs uppercase font-bold py-3 text-red-500">
+                    <Link 
+                        to={user?.role === 'admin' ? "/admin" : "/user/profile"} 
+                        className="text-xs uppercase font-bold py-3 hover:bg-black hover:text-white transition-colors"
+                    >
+                        {user?.role === 'admin' ? "Admin Panel" : "My Dashboard"}
+                    </Link>
+                  </li>
+
+                  <li>
+                    <button onClick={handleLogOut} className="text-xs uppercase font-bold py-3 text-red-500 hover:bg-red-50 transition-colors">
                       <LogOut size={14} /> Logout
                     </button>
                   </li>
@@ -85,11 +102,11 @@ const Navbar = () => {
               </Link>
             )}
 
-            {/* Shopping Bag - Now Dynamic! */}
+            {/* Shopping Bag Icon */}
             <Link to="/cart" className="p-2 hover:bg-gray-50 rounded-full transition-all relative">
               <ShoppingBag size={20} strokeWidth={1.5} />
               {totalItems > 0 && (
-                <span className="absolute top-1 right-1 bg-black text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
+                <span className="absolute top-1 right-1 bg-black text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold animate-bounce">
                   {totalItems}
                 </span>
               )}
