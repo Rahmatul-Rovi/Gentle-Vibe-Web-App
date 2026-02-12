@@ -10,18 +10,30 @@ const AuthProvider = ({ children }) => {
 
     const logOut = () => {
         setLoading(true);
+        localStorage.removeItem('user'); // Local storage clean kora bhalo
+        localStorage.removeItem('token');
         return signOut(auth);
     }
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            setUser(currentUser);
+            if (currentUser) {
+                // Jodi Firebase-e user thake, check koro LocalStorage-e MongoDB data ache ki na
+                const storedUser = JSON.parse(localStorage.getItem('user'));
+                if (storedUser) {
+                    setUser(storedUser);
+                } else {
+                    setUser(currentUser);
+                }
+            } else {
+                setUser(null);
+            }
             setLoading(false);
         });
         return () => unsubscribe();
     }, []);
 
-    const authInfo = { user, loading, logOut };
+    const authInfo = { user, setUser, loading, logOut };
 
     return (
         <AuthContext.Provider value={authInfo}>
