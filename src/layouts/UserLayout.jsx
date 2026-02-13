@@ -4,10 +4,8 @@ import {
     LayoutDashboard, 
     User, 
     ShoppingBag, 
-    Settings, 
     LogOut, 
     Menu, 
-    X, 
     ArrowLeft 
 } from 'lucide-react';
 
@@ -16,7 +14,6 @@ const UserLayout = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // path gulo router-er sathe milate hobe (/user/...)
     const menuItems = [
         { name: 'Dashboard', path: '/user', icon: <LayoutDashboard size={18} /> },
         { name: 'Profile', path: '/user/profile', icon: <User size={18} /> },
@@ -43,14 +40,19 @@ const UserLayout = () => {
                 <div className="fixed inset-0 bg-black/60 z-40 lg:hidden" onClick={() => setSidebarOpen(false)}></div>
             )}
 
-            {/* Sidebar (Deep Dark like your image) */}
-            <aside className={`fixed inset-y-0 left-0 w-72 bg-[#0A0A0A] text-white z-50 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 transition-transform duration-500 ease-in-out border-r border-white/5`}>
-                <div className="p-10">
-                    <h2 className="text-2xl font-black uppercase italic tracking-tighter leading-none">Gentle Vibe</h2>
-                    <p className="text-[9px] text-gray-500 uppercase tracking-[0.4em] mt-2 font-bold">User Dashboard</p>
-                </div>
+            {/* Sidebar */}
+            <aside className={`fixed inset-y-0 left-0 w-72 bg-[#0A0A0A] text-white z-50 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 transition-transform duration-500 ease-in-out border-r border-white/5 flex flex-col`}>
+               
+                {/* Logo Section */}
+                <Link to="/">
+                    <div className="p-10">
+                        <h2 className="text-2xl font-black uppercase italic tracking-tighter leading-none">Gentle Vibe</h2>
+                        <p className="text-[9px] text-gray-500 uppercase tracking-[0.4em] mt-2 font-bold">User Dashboard</p>
+                    </div>
+                </Link>
 
-                <nav className="mt-4 px-6 space-y-2">
+                {/* Navigation Links */}
+                <nav className="flex-1 px-6 space-y-2">
                     {menuItems.map((item) => (
                         <Link
                             key={item.name}
@@ -67,25 +69,35 @@ const UserLayout = () => {
                         </Link>
                     ))}
                     
+                    <div className="my-6 border-t border-white/5"></div>
+
+                    {/* --- BACK TO SHOP (UPPER POSITION) --- */}
+                    <Link 
+                        to="/" 
+                        className="flex items-center gap-4 px-5 py-4 rounded-xl text-[11px] font-black uppercase tracking-widest text-gray-400 hover:text-white hover:bg-white/5 transition-all"
+                    >
+                        <ArrowLeft size={18} />
+                        Back to Shop
+                    </Link>
+
+                    {/* Logout Button */}
                     <button 
                         onClick={handleLogout}
-                        className="w-full flex items-center gap-4 px-5 py-4 text-[11px] font-black uppercase tracking-widest text-red-500 hover:bg-red-500/10 transition-all mt-10"
+                        className="w-full flex items-center gap-4 px-5 py-4 text-[11px] font-black uppercase tracking-widest text-red-500 hover:bg-red-500/10 rounded-xl transition-all"
                     >
                         <LogOut size={18} />
                         Logout
                     </button>
                 </nav>
 
-                <div className="absolute bottom-10 left-10">
-                    <Link to="/" className="flex items-center gap-2 text-[10px] font-black text-gray-600 hover:text-white transition-colors uppercase tracking-widest">
-                        <ArrowLeft size={14} /> Back to Shop
-                    </Link>
+                {/* Footer credit or version (Optional) */}
+                <div className="p-10 opacity-20">
+                    <p className="text-[8px] font-black uppercase tracking-[0.5em]">v.2.0.26</p>
                 </div>
             </aside>
 
             {/* Main Content Area */}
             <main className="flex-1 lg:ml-72 transition-all duration-300">
-                {/* Header Section */}
                 <header className="bg-white border-b border-gray-100 py-6 px-10 flex justify-between items-center sticky top-0 z-30">
                     <div className="flex items-center gap-2">
                         <span className="text-[10px] font-black uppercase tracking-widest text-gray-300">Management /</span>
@@ -96,7 +108,6 @@ const UserLayout = () => {
                 </header>
 
                 <div className="p-10 max-w-6xl mx-auto">
-                    {/* Eikhane Dashboard-er pages load hobe */}
                     <Outlet />
                 </div>
             </main>
