@@ -50,10 +50,10 @@ const Navbar = () => {
           <div className="navbar-center hidden lg:flex">
             <ul className="flex items-center gap-8">
               <li><Link to="/" className="text-[13px] font-bold uppercase tracking-widest hover:text-gray-500 transition-colors">Home</Link></li>
-              <li><Link to="/collections" className="text-[13px] font-bold uppercase tracking-widest hover:text-gray-500 transition-colors">Collections</Link></li>
-              <li><Link to="/mens" className="text-[13px] font-bold uppercase tracking-widest hover:text-gray-500 transition-colors">Mens</Link></li>
-              <li><Link to="/womens" className="text-[13px] font-bold uppercase tracking-widest hover:text-gray-500 transition-colors">Womens</Link></li>
-              <li><Link to="/new-arrival" className="text-[13px] font-bold uppercase tracking-widest hover:text-gray-500 transition-colors">New Arrival</Link></li>
+              <li><Link to="/shop" className="text-[13px] font-bold uppercase tracking-widest hover:text-gray-500 transition-colors">Collections</Link></li>
+              <li><Link to="/collections/mens" className="text-[13px] font-bold uppercase tracking-widest hover:text-gray-500 transition-colors">Mens</Link></li>
+              <li><Link to="/collections/womens" className="text-[13px] font-bold uppercase tracking-widest hover:text-gray-500 transition-colors">Womens</Link></li>
+              <li><Link to="/collections/new-arrival" className="text-[13px] font-bold uppercase tracking-widest hover:text-gray-500 transition-colors">New Arrival</Link></li>
             </ul>
           </div>
 

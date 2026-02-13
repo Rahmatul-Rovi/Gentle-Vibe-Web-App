@@ -41,7 +41,8 @@ const router = createBrowserRouter([
       { path: "shop", element: <ProductList /> },
       { path: "cart", element: <CartPage /> },
       { path: "checkout", element: <UserRoute><Checkout /></UserRoute> }, // Checkout e UserRoute must
-      {path: "collections", element: <Shop></Shop> }
+      {path: "shop", element: <Shop></Shop> },
+      { path: "collections/:category", element: <Shop /> }, // Dynamic (Mens, Womens, New Arrival er jonno)
     ],
   },
   {
