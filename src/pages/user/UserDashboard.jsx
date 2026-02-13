@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Package, Heart, CreditCard, Loader2, ArrowRight, ShoppingBag } from "lucide-react";
 import axios from "axios";
 import { useCart } from "../../context/CartContext";
+import { Link } from "react-router";
 
 
 const UserDashboard = () => {
@@ -16,13 +17,16 @@ const UserDashboard = () => {
     const fetchDashboardData = async () => {
       try {
         const storedUser = JSON.parse(localStorage.getItem("user"));
+        
+        const userId = storedUser?._id || storedUser?.id || storedUser?.uid;
 
-        if (!storedUser || !storedUser.id) {
+        if (!userId) {
+          console.error("User ID not found in localStorage");
           setLoading(false);
           return;
         }
 
-        const res = await axios.get(`http://localhost:5000/api/user/dashboard-summary/${storedUser.id}`);
+        const res = await axios.get(`http://localhost:5000/api/user/dashboard-summary/${userId}`);
         setStats(res.data);
       } catch (err) {
         console.error("Dashboard API error:", err);
@@ -104,9 +108,11 @@ const UserDashboard = () => {
               Recent Activity
             </h3>
           </div>
+         <Link to="orders">
           <button className="text-[10px] font-black uppercase tracking-widest flex items-center gap-2 hover:translate-x-1 transition-transform">
             View All <ArrowRight size={14} />
           </button>
+         </Link>
         </div>
 
         <div className="p-8">
