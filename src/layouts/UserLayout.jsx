@@ -6,7 +6,8 @@ import {
     ShoppingBag, 
     LogOut, 
     Menu, 
-    ArrowLeft 
+    ArrowLeft, 
+    MessageSquareQuote
 } from 'lucide-react';
 
 const UserLayout = () => {
@@ -18,6 +19,7 @@ const UserLayout = () => {
         { name: 'Dashboard', path: '/user', icon: <LayoutDashboard size={18} /> },
         { name: 'Profile', path: '/user/profile', icon: <User size={18} /> },
         { name: 'Orders', path: '/user/orders', icon: <ShoppingBag size={18} /> },
+         { name: 'My-Review', path: '/user/my-reviews', icon: <MessageSquareQuote size={18} /> },
     ];
 
     const handleLogout = () => {

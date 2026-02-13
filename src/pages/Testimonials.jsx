@@ -5,9 +5,9 @@ import { Quote } from 'lucide-react';
 const Testimonials = () => {
   const [reviews, setReviews] = useState([]);
 
-  useEffect(() => {
-    axios.get('http://localhost:5000/api/reviews/approved').then(res => setReviews(res.data));
-  }, []);
+ useEffect(() => {
+  axios.get('http://localhost:5000/api/reviews').then(res => setReviews(res.data));
+}, []);
 
   return (
     <div className="py-20 px-10">

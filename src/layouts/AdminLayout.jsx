@@ -8,6 +8,7 @@ import {
   Settings,
   ShieldCheck,
   User,
+  MessageSquareQuote,
 } from "lucide-react";
 
 const AdminLayout = () => {
@@ -103,6 +104,16 @@ const AdminLayout = () => {
               Profile
             </span>
           </Link>
+
+          <Link
+  to="/admin/reviews"
+  className={`flex items-center gap-3 p-3 rounded-none transition-all ${isActive("/admin/reviews")}`} // Path-tao thik kore dilam
+>
+  <MessageSquareQuote size={18} />
+  <span className="text-sm font-bold uppercase tracking-widest">
+    User Reviews
+  </span>
+</Link>
 
           <div className="pt-10 border-t border-gray-800 mt-10">
             <Link

@@ -29,6 +29,9 @@ import UserRoute from "../routes/UserRoute";
 import AdminRoute from "../routes/AdminRoute";
 import Shop from "../pages/Shop.jsx";
 import PaymentSuccess from "../pages/PaymentSuccess.jsx";
+import Testimonials from "../pages/Testimonials.jsx";
+import MyReview from "../pages/user/MyReview.jsx";
+import AdminReviews from "../pages/admin/AdminReviews.jsx";
 
 const router = createBrowserRouter([
   {
@@ -41,14 +44,15 @@ const router = createBrowserRouter([
       { path: "product/:id", element: <ProductDetails /> },
       { path: "shop", element: <ProductList /> },
       { path: "cart", element: <CartPage /> },
-      { path: "checkout", element: <UserRoute><Checkout /></UserRoute> }, // Checkout e UserRoute must
+      { path: "checkout", element: <UserRoute><Checkout /></UserRoute> }, // In Checkout UserRoute must
       {path: "shop", element: <Shop></Shop> },
-      { path: "collections/:category", element: <Shop /> }, // Dynamic (Mens, Womens, New Arrival er jonno)
+      { path: "collections/:category", element: <Shop /> }, // Dynamic (Mens, Womens, New Arrival)
+      { path: "testimonials", element: <Testimonials></Testimonials> }
     ],
   },
   {
     path: "/admin",
-    element: <AdminRoute><AdminLayout /></AdminRoute>, // Ekhon keu manually likhleo dhukte parbe na
+    element: <AdminRoute><AdminLayout /></AdminRoute>,
     children: [
       { index: true, element: <AdminDashboard /> },
       { path: "add-product", element: <AddProduct /> },
@@ -56,7 +60,8 @@ const router = createBrowserRouter([
       { path: "orders", element: <AdminOrders /> },
       { path: "users", element: <AdminUsers /> },
       { path: "make-admin", element: <MakeAdmin /> },
-      { path: "profile", element: <AdminProfile /> }
+      { path: "profile", element: <AdminProfile /> },
+      { path: "reviews", element: <AdminReviews></AdminReviews> }
     ],
   },
   {
@@ -66,6 +71,7 @@ const router = createBrowserRouter([
       { index: true, element: <UserDashboard /> },
       { path: "profile", element: <UserProfile /> },
       { path: "orders", element: <UserOrder /> },
+      { path: "my-reviews", element: <MyReview></MyReview> }
      
     ] 
   },
