@@ -7,6 +7,7 @@ import Hero from '../components/Hero';
 import Categories from '../components/Categories';
 import Swal from 'sweetalert2'; 
 import { useCart } from '../context/CartContext'; 
+import Testimonials from './Testimonials';
 
 const Home = () => {
     const [products, setProducts] = useState([]);
@@ -132,6 +133,8 @@ const Home = () => {
                     </div>
                 )}
             </div>
+
+            <Testimonials></Testimonials>
 
             <BrandStory />
 

@@ -35,7 +35,7 @@ const MyReview = () => {
       Swal.fire({
         icon: 'success',
         title: 'Thank You!',
-        text: 'Your review has been submitted for approval ❤️',
+        text: 'Your review has been submitted!❤️',
         confirmButtonColor: '#000'
       });
 

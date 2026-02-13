@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Trash2 } from 'lucide-react';
+import Swal from 'sweetalert2';
 
 const AdminReviews = () => {
   const [reviews, setReviews] = useState([]);
@@ -19,13 +20,35 @@ const AdminReviews = () => {
   }, []);
 
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this review?")) {
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: "This review will be permanently deleted!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#000',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    });
+
+    if (result.isConfirmed) {
       try {
         await axios.delete(`http://localhost:5000/api/admin/reviews/${id}`);
         fetchReviews();
+
+        Swal.fire({
+          title: 'Deleted!',
+          text: 'The review has been deleted.',
+          icon: 'success',
+          confirmButtonColor: '#000',
+        });
       } catch (err) {
         console.error(err);
-        alert("Delete failed");
+        Swal.fire({
+          title: 'Error!',
+          text: 'Delete failed. Please try again.',
+          icon: 'error',
+          confirmButtonColor: '#000',
+        });
       }
     }
   };
