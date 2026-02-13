@@ -9,26 +9,34 @@ const UserOrder = () => {
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                // LocalStorage theke logged-in user nite hobe
+                // 1. LocalStorage theke data nilam
                 const storedUser = JSON.parse(localStorage.getItem('user'));
                 
-                if (!storedUser || !storedUser.id) {
-                    console.error("User ID khuje paoya jayni");
+                // 2. ID khuje ber korar safe way (Different auth provider-er jonno)
+                const userId = storedUser?._id || storedUser?.id || storedUser?.uid;
+
+                if (!userId) {
+                    console.error("User ID khuje paoya jayni. User hoyto logged in na.");
                     setLoading(false);
                     return;
                 }
 
-                // Backend route matching: /api/user/my-orders/:userId
-                const res = await axios.get(`http://localhost:5000/api/user/my-orders/${storedUser.id}`);
+                console.log("Fetching orders for User ID:", userId);
+
+                // 3. Backend-e call korchi
+                const res = await axios.get(`http://localhost:5000/api/user/my-orders/${userId}`);
                 setOrders(res.data);
             } catch (err) {
-                console.error("Orders load korte error hoyeche", err);
+                console.error("Orders load korte error hoyeche:", err.response?.data || err.message);
             } finally {
                 setLoading(false);
             }
         };
+
         fetchOrders();
     }, []);
+
+    // ... Loading and Table UI (Ager motoi thakbe) ...
 
     if (loading) return (
         <div className="flex flex-col items-center justify-center py-20 gap-4">

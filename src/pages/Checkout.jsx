@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import axios from 'axios';
+import { AuthContext } from '../providers/AuthProvider';
 
 const Checkout = () => {
+    const { user } = React.useContext(AuthContext);
     const { cart } = useCart();
     const [address, setAddress] = useState({ name: '', phone: '', city: '', address: '' });
 
@@ -29,7 +31,7 @@ const Checkout = () => {
             cart: cart,
             address: address, // state theke city auto jabe ekhon
             totalAmount: Number(finalAmount), 
-            userId: "USER_ID_FROM_AUTH"
+            userId: user?.id || user?._id || "Guest"
         };
 
         console.log("Sending to Backend:", orderData);

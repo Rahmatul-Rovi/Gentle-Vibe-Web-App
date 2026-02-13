@@ -28,6 +28,7 @@ import UserOrder from "../pages/user/UserOrder.jsx";
 import UserRoute from "../routes/UserRoute"; 
 import AdminRoute from "../routes/AdminRoute";
 import Shop from "../pages/Shop.jsx";
+import PaymentSuccess from "../pages/PaymentSuccess.jsx";
 
 const router = createBrowserRouter([
   {
@@ -64,9 +65,11 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <UserDashboard /> },
       { path: "profile", element: <UserProfile /> },
-      { path: "orders", element: <UserOrder /> }
+      { path: "orders", element: <UserOrder /> },
+     
     ] 
   },
+   {path: "/payment/success/:tranId", element: <PaymentSuccess></PaymentSuccess>},
   {
     path: "*",
     element: <div className="h-screen flex items-center justify-center font-black">404 - NOT FOUND</div>,
