@@ -27,6 +27,7 @@ import UserOrder from "../pages/user/UserOrder.jsx";
 // Upore baki import gulor niche eigula add koro:
 import UserRoute from "../routes/UserRoute"; 
 import AdminRoute from "../routes/AdminRoute";
+import Shop from "../pages/Shop.jsx";
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,7 @@ const router = createBrowserRouter([
       { path: "shop", element: <ProductList /> },
       { path: "cart", element: <CartPage /> },
       { path: "checkout", element: <UserRoute><Checkout /></UserRoute> }, // Checkout e UserRoute must
+      {path: "collections", element: <Shop></Shop> }
     ],
   },
   {
