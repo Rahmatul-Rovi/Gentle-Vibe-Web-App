@@ -19,7 +19,7 @@ const BrandStory = () => {
              </p>
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <img src="https://images.unsplash.com/photo-1550639524-a6f58a49a292?q=80&w=1000&auto=format&fit=crop" className="w-full h-80 object-cover grayscale hover:grayscale-0 transition-all duration-700" alt="Vibe 1" />
+            <img src="https://images.unsplash.com/photo-1544441893-675973e31985?q=80&w=1200&auto=format&fit=crop" className="w-full h-80 object-cover grayscale hover:grayscale-0 transition-all duration-700" alt="Vibe 1" />
             <img src="https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?q=80&w=1000&auto=format&fit=crop" className="w-full h-80 object-cover mt-12 grayscale hover:grayscale-0 transition-all duration-700" alt="Vibe 2" />
           </div>
         </div>

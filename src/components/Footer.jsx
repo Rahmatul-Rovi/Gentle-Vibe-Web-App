@@ -26,9 +26,9 @@ const Footer = () => {
             <h4 className="font-black uppercase text-xs tracking-[0.2em] mb-8 text-gray-500">Shop</h4>
             <ul className="space-y-4 text-sm font-bold uppercase tracking-widest">
               <li><Link to="/shop" className="hover:pl-2 transition-all duration-300">All Collections</Link></li>
-              <li><Link to="/category/men" className="hover:pl-2 transition-all duration-300">Menswear</Link></li>
-              <li><Link to="/category/women" className="hover:pl-2 transition-all duration-300">Womenswear</Link></li>
-              <li><Link to="/new-arrivals" className="hover:pl-2 transition-all duration-300">New Arrivals</Link></li>
+              <li><Link to="/collections/mens" className="hover:pl-2 transition-all duration-300">Menswear</Link></li>
+              <li><Link to="/collections/womens" className="hover:pl-2 transition-all duration-300">Womenswear</Link></li>
+              <li><Link to="/collections/new-arrival" className="hover:pl-2 transition-all duration-300">New Arrivals</Link></li>
             </ul>
           </div>
 
