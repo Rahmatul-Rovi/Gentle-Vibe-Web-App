@@ -2,17 +2,24 @@ import React, { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { CheckCircle } from 'lucide-react';
 import confetti from 'canvas-confetti'; 
+import { useCart } from '../context/CartContext'; 
 
 const PaymentSuccess = () => {
     const { tranId } = useParams();
+    const { setCart } = useCart(); 
 
     useEffect(() => {
+        if (setCart) {
+            setCart([]); 
+            localStorage.removeItem('cart'); 
+        }
+
         confetti({
             particleCount: 150,
             spread: 70,
             origin: { y: 0.6 }
         });
-    }, []);
+    }, [setCart]); 
 
     return (
         <div className="h-screen flex flex-col items-center justify-center space-y-6">
@@ -21,8 +28,8 @@ const PaymentSuccess = () => {
             <p className="text-gray-500 font-medium">Your transaction ID: <span className="text-black font-bold">{tranId}</span></p>
             
             <div className="flex gap-4 mt-8">
-                <Link to="/user/profile" className="bg-black text-white px-8 py-3 text-xs font-bold uppercase tracking-widest hover:bg-gray-800 transition-all">
-                    Go to Dashboard
+                <Link to="/user/orders" className="bg-black text-white px-8 py-3 text-xs font-bold uppercase tracking-widest hover:bg-gray-800 transition-all">
+                    View My Orders
                 </Link>
                 <Link to="/" className="border border-black px-8 py-3 text-xs font-bold uppercase tracking-widest hover:bg-gray-50 transition-all">
                     Continue Shopping
