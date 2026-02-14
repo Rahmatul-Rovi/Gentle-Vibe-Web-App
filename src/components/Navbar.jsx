@@ -8,7 +8,6 @@ const Navbar = () => {
   const { user, logOut } = useContext(AuthContext);
   const { cart } = useCart();
 
-  // Total items calculation for cart badge
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   const handleLogOut = () => {
@@ -29,14 +28,16 @@ const Navbar = () => {
           {/* Mobile Menu & Logo */}
           <div className="navbar-start">
             <div className="dropdown">
-              <label tabIndex={0} className="btn btn-ghost lg:hidden p-0 mr-2">
+              <label tabIndex={0} className="btn btn-ghost lg:hidden p-0 mr-2 cursor-pointer">
                 <Menu size={24} />
               </label>
+              {/* FIXED MOBILE LINKS TO MATCH DESKTOP */}
               <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-4 shadow-xl bg-white rounded-none w-64 uppercase font-medium tracking-wider gap-2">
                 <li><Link to="/">Home</Link></li>
-                <li><Link to="/collections">Collections</Link></li>
-                <li><Link to="/mens">Mens</Link></li>
-                <li><Link to="/womens">Womens</Link></li>
+                <li><Link to="/shop">Collections</Link></li>
+                <li><Link to="/collections/mens">Mens</Link></li>
+                <li><Link to="/collections/womens">Womens</Link></li>
+                <li><Link to="/collections/new-arrival">New Arrival</Link></li>
               </ul>
             </div>
             <Link to="/" className="text-2xl font-black tracking-tighter cursor-pointer">
@@ -52,7 +53,6 @@ const Navbar = () => {
               <li><Link to="/collections/mens" className="text-[13px] font-bold uppercase tracking-widest hover:text-gray-500 transition-colors">Mens</Link></li>
               <li><Link to="/collections/womens" className="text-[13px] font-bold uppercase tracking-widest hover:text-gray-500 transition-colors">Womens</Link></li>
               <li><Link to="/collections/new-arrival" className="text-[13px] font-bold uppercase tracking-widest hover:text-gray-500 transition-colors">New Arrival</Link></li>
-              <li><Link to="testimonials" className="text-[13px] font-bold uppercase tracking-widest hover:text-gray-500 transition-colors">Testimonials</Link></li>
             </ul>
           </div>
 
@@ -64,7 +64,7 @@ const Navbar = () => {
             
             {user ? (
               <div className="dropdown dropdown-end">
-                <label tabIndex={0} className="btn btn-ghost btn-circle avatar border border-gray-100">
+                <label tabIndex={0} className="btn btn-ghost btn-circle avatar border border-gray-100 cursor-pointer">
                   <div className="w-8 rounded-full">
                     <img src={user?.photoURL || "https://i.ibb.co/mJR9hS1/user.png"} alt="profile" />
                   </div>
@@ -99,7 +99,6 @@ const Navbar = () => {
               </Link>
             )}
 
-            {/* Shopping Bag Icon */}
             <Link to="/cart" className="p-2 hover:bg-gray-50 rounded-full transition-all relative">
               <ShoppingBag size={20} strokeWidth={1.5} />
               {totalItems > 0 && (

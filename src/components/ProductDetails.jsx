@@ -34,28 +34,36 @@ const ProductDetails = () => {
     }, [id]);
 
     // 2. The Logic to handle "Add to Bag" click
-    const handleAddToBag = () => {
-        if (!selectedSize || !selectedColor) {
-            return Swal.fire({
-                icon: 'warning',
-                text: 'Please select size and color first!',
-                confirmButtonColor: '#000'
-            });
-        }
-
-        // Add to global state
-        addToCart(product, selectedSize, selectedColor);
-
-        // Professional success notification
-        Swal.fire({
-            icon: 'success',
-            title: 'Added to Bag',
-            text: `${product.name} is ready for checkout!`,
-            showConfirmButton: false,
-            timer: 1500,
-            background: '#fff',
+    // ProductDetails.jsx - Add to Bag section update
+const handleAddToBag = () => {
+    // Extra check: stock 0 hole add korte dibe na
+    if (product.stock <= 0) {
+        return Swal.fire({
+            icon: 'error',
+            title: 'Out of Stock',
+            text: 'Sorry, this item is no longer available!',
+            confirmButtonColor: '#000'
         });
-    };
+    }
+
+    if (!selectedSize || !selectedColor) {
+        return Swal.fire({
+            icon: 'warning',
+            text: 'Please select size and color first!',
+            confirmButtonColor: '#000'
+        });
+    }
+
+    addToCart(product, selectedSize, selectedColor);
+    
+    Swal.fire({
+        icon: 'success',
+        title: 'Added to Bag',
+        text: `${product.name} is ready for checkout!`,
+        showConfirmButton: false,
+        timer: 1500
+    });
+};
 
     if (!product) return <div className="h-screen flex items-center justify-center uppercase font-black tracking-widest text-gray-400 animate-pulse">Loading Vibe...</div>;
 
@@ -112,12 +120,18 @@ const ProductDetails = () => {
                 {/* Actions */}
                 <div className="flex flex-col gap-4">
                     {/* Updated Button with handleAddToBag */}
-                    <button 
-                        onClick={handleAddToBag}
-                        className="w-full bg-black text-white py-5 font-black uppercase tracking-[0.2em] text-xs hover:bg-gray-800 transition-all flex items-center justify-center gap-3 active:scale-95"
-                    >
-                        <ShoppingBag size={18} /> Add to Bag
-                    </button>
+                   <button 
+    onClick={handleAddToBag}
+    disabled={product.stock <= 0}
+    className={`w-full py-5 font-black uppercase tracking-[0.2em] text-xs transition-all flex items-center justify-center gap-3 active:scale-95 ${
+        product.stock <= 0 
+        ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
+        : 'bg-black text-white hover:bg-gray-800'
+    }`}
+>
+    <ShoppingBag size={18} /> 
+    {product.stock <= 0 ? 'Out of Stock' : 'Add to Bag'}
+</button>
                     
                     <div className="grid grid-cols-2 gap-4 mt-10 border-t pt-8">
                         <div className="flex items-center gap-3 text-[10px] font-bold uppercase text-gray-400 tracking-widest">
