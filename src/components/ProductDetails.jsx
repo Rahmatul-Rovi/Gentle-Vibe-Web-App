@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
-import { ShoppingBag, Truck, ShieldCheck } from 'lucide-react';
-import { useCart } from '../context/CartContext'; // Import your Cart Hook
-import Swal from 'sweetalert2'; // Import SweetAlert
+import { ShoppingBag, Truck, ShieldCheck, ChevronLeft } from 'lucide-react';
+import { useCart } from '../context/CartContext';
+import Swal from 'sweetalert2';
 
 const ProductDetails = () => {
     const { id } = useParams();
     const [product, setProduct] = useState(null);
     const [selectedSize, setSelectedSize] = useState("");
     const [selectedColor, setSelectedColor] = useState("");
+    const [mainImage, setMainImage] = useState(""); // Image sync state
     
-    // 1. Get the addToCart function from our Global Context
     const { addToCart } = useCart();
 
     useEffect(() => {
@@ -20,11 +20,11 @@ const ProductDetails = () => {
                 const res = await axios.get(`http://localhost:5000/api/products/${id}`);
                 setProduct(res.data);
                 
-                // Auto-select first size and color if they exist
-                if (res.data.sizes.length > 0) setSelectedSize(res.data.sizes[0]);
-                if (res.data.colors.length > 0) setSelectedColor(res.data.colors[0]);
+                // Initial settings
+                setMainImage(res.data.images[0]); 
+                if (res.data.sizes?.length > 0) setSelectedSize(res.data.sizes[0]);
+                if (res.data.colors?.length > 0) setSelectedColor(res.data.colors[0]);
                 
-                // Scroll to top when product loads
                 window.scrollTo(0, 0);
             } catch (err) {
                 console.error("Error fetching product:", err);
@@ -33,112 +33,164 @@ const ProductDetails = () => {
         fetchProduct();
     }, [id]);
 
-    // 2. The Logic to handle "Add to Bag" click
-    // ProductDetails.jsx - Add to Bag section update
-const handleAddToBag = () => {
-    // Extra check: stock 0 hole add korte dibe na
-    if (product.stock <= 0) {
-        return Swal.fire({
-            icon: 'error',
-            title: 'Out of Stock',
-            text: 'Sorry, this item is no longer available!',
-            confirmButtonColor: '#000'
+    // Color click korle image sync hobar logic
+    const handleColorClick = (color, index) => {
+        setSelectedColor(color);
+        // Jodi images array-te color sequence thake, tobe image-o change hobe
+        if (product.images[index]) {
+            setMainImage(product.images[index]);
+        }
+    };
+
+    const handleAddToBag = () => {
+        if (product.stock <= 0) {
+            return Swal.fire({
+                icon: 'error',
+                title: 'Out of Stock',
+                text: 'This vibe is currently unavailable!',
+                confirmButtonColor: '#000'
+            });
+        }
+
+        if (!selectedSize || !selectedColor) {
+            return Swal.fire({
+                icon: 'warning',
+                text: 'Please select size and color!',
+                confirmButtonColor: '#000'
+            });
+        }
+
+        addToCart(product, selectedSize, selectedColor);
+        
+        Swal.fire({
+            icon: 'success',
+            title: 'Added to Bag',
+            text: `${product.name} is ready for checkout!`,
+            showConfirmButton: false,
+            timer: 1500
         });
-    }
+    };
 
-    if (!selectedSize || !selectedColor) {
-        return Swal.fire({
-            icon: 'warning',
-            text: 'Please select size and color first!',
-            confirmButtonColor: '#000'
-        });
-    }
-
-    addToCart(product, selectedSize, selectedColor);
-    
-    Swal.fire({
-        icon: 'success',
-        title: 'Added to Bag',
-        text: `${product.name} is ready for checkout!`,
-        showConfirmButton: false,
-        timer: 1500
-    });
-};
-
-    if (!product) return <div className="h-screen flex items-center justify-center uppercase font-black tracking-widest text-gray-400 animate-pulse">Loading Vibe...</div>;
+    if (!product) return (
+        <div className="h-screen flex items-center justify-center uppercase font-black tracking-[0.5em] text-gray-300 animate-pulse">
+            Loading Vibe...
+        </div>
+    );
 
     return (
-        <div className="max-w-7xl mx-auto px-4 py-20 grid grid-cols-1 md:grid-cols-2 gap-16">
-            {/* Left: Image Section */}
-            <div className="bg-[#f5f5f5] aspect-[3/4] overflow-hidden group">
-                <img 
-                    src={product.images[0]} 
-                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
-                    alt={product.name} 
-                />
-            </div>
+        <div className="max-w-7xl mx-auto px-4 py-10 md:py-20">
+            {/* Back Button */}
+            <Link to="/shop" className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest mb-10 hover:ml-2 transition-all">
+                <ChevronLeft size={14} /> Back to Collection
+            </Link>
 
-            {/* Right: Info Section */}
-            <div className="flex flex-col">
-                <span className="text-gray-400 uppercase text-[10px] font-bold tracking-[0.4em] mb-2">{product.category}</span>
-                <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter mb-4 italic leading-none">{product.name}</h1>
-                <p className="text-2xl font-bold mb-6">${product.price}</p>
-                <p className="text-gray-600 mb-8 leading-relaxed text-sm">{product.description}</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20">
+                
+                {/* --- LEFT: IMAGE SECTION --- */}
+                <div className="flex flex-col gap-4">
+                    <div className="bg-[#f9f9f9] aspect-[3/4] overflow-hidden group relative">
+                        <img 
+                            src={mainImage} 
+                            className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
+                            alt={product.name} 
+                        />
+                        {product.stock <= 0 && (
+                            <div className="absolute inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center">
+                                <span className="bg-white text-black px-8 py-3 font-black uppercase tracking-[0.3em] text-xs">Sold Out</span>
+                            </div>
+                        )}
+                    </div>
 
-                {/* Size Selection */}
-                <div className="mb-6">
-                    <p className="text-[10px] font-black uppercase mb-3 tracking-widest text-gray-400">Select Size</p>
-                    <div className="flex gap-3">
-                        {product.sizes.map(size => (
+                    {/* Thumbnails - Clicking changes Main Image */}
+                    <div className="flex gap-3 overflow-x-auto pb-2">
+                        {product.images.map((img, idx) => (
                             <button 
-                                key={size}
-                                onClick={() => setSelectedSize(size)}
-                                className={`px-6 py-2 border text-[10px] font-black uppercase transition-all duration-300 ${selectedSize === size ? 'bg-black text-white border-black' : 'bg-white text-black hover:border-black'}`}
+                                key={idx}
+                                onClick={() => setMainImage(img)}
+                                className={`w-20 h-24 flex-shrink-0 border-2 transition-all ${mainImage === img ? 'border-black' : 'border-transparent opacity-60'}`}
                             >
-                                {size}
+                                <img src={img} className="w-full h-full object-cover" alt="thumbnail" />
                             </button>
                         ))}
                     </div>
                 </div>
 
-                {/* Color Selection */}
-                <div className="mb-10">
-                    <p className="text-[10px] font-black uppercase mb-3 tracking-widest text-gray-400">Available Colors</p>
-                    <div className="flex gap-4">
-                        {product.colors.map(color => (
-                            <button 
-                                key={color}
-                                onClick={() => setSelectedColor(color)}
-                                className={`w-8 h-8 rounded-full border-2 transition-all duration-300 ${selectedColor === color ? 'border-black scale-125 shadow-lg' : 'border-transparent'}`}
-                                style={{ backgroundColor: color.toLowerCase() }}
-                                title={color}
-                            />
-                        ))}
-                    </div>
-                </div>
-
-                {/* Actions */}
-                <div className="flex flex-col gap-4">
-                    {/* Updated Button with handleAddToBag */}
-                   <button 
-    onClick={handleAddToBag}
-    disabled={product.stock <= 0}
-    className={`w-full py-5 font-black uppercase tracking-[0.2em] text-xs transition-all flex items-center justify-center gap-3 active:scale-95 ${
-        product.stock <= 0 
-        ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
-        : 'bg-black text-white hover:bg-gray-800'
-    }`}
->
-    <ShoppingBag size={18} /> 
-    {product.stock <= 0 ? 'Out of Stock' : 'Add to Bag'}
-</button>
+                {/* --- RIGHT: INFO SECTION --- */}
+                <div className="flex flex-col">
+                    <span className="text-gray-400 uppercase text-[10px] font-bold tracking-[0.4em] mb-2">
+                        {product.category}
+                    </span>
+                    <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter mb-4 italic leading-none">
+                        {product.name}
+                    </h1>
+                    <p className="text-2xl font-bold mb-8 text-black/80">৳{product.price}</p>
                     
-                    <div className="grid grid-cols-2 gap-4 mt-10 border-t pt-8">
-                        <div className="flex items-center gap-3 text-[10px] font-bold uppercase text-gray-400 tracking-widest">
-                            <Truck size={16} className="text-black" /> Fast Delivery
+                    <div className="h-[1px] bg-gray-100 w-full mb-8" />
+
+                    <p className="text-gray-500 mb-10 leading-relaxed text-sm tracking-wide">
+                        {product.description}
+                    </p>
+
+                    {/* Size Selection */}
+                    <div className="mb-8">
+                        <div className="flex justify-between mb-4">
+                            <p className="text-[10px] font-black uppercase tracking-widest text-black">Select Size</p>
+                            <button className="text-[10px] font-bold uppercase tracking-widest text-gray-400 underline">Size Guide</button>
                         </div>
-                        <div className="flex items-center gap-3 text-[10px] font-bold uppercase text-gray-400 tracking-widest">
-                            <ShieldCheck size={16} className="text-black" /> 100% Authentic
+                        <div className="flex flex-wrap gap-3">
+                            {product.sizes.map(size => (
+                                <button 
+                                    key={size}
+                                    onClick={() => setSelectedSize(size)}
+                                    className={`min-w-[60px] py-3 border text-[10px] font-black uppercase transition-all ${selectedSize === size ? 'bg-black text-white border-black shadow-lg' : 'bg-white text-black hover:border-black'}`}
+                                >
+                                    {size}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Color Selection - Click handles both selection and image sync */}
+                    <div className="mb-12">
+                        <p className="text-[10px] font-black uppercase mb-4 tracking-widest text-black">Available Colors</p>
+                        <div className="flex gap-4">
+                            {product.colors.map((color, index) => (
+                                <button 
+                                    key={color}
+                                    onClick={() => handleColorClick(color, index)}
+                                    className={`w-10 h-10 rounded-full border-2 transition-all flex items-center justify-center ${selectedColor === color ? 'border-black scale-110 shadow-md' : 'border-gray-100'}`}
+                                    title={color}
+                                >
+                                    <span 
+                                        className="w-8 h-8 rounded-full border border-black/5" 
+                                        style={{ backgroundColor: color.toLowerCase() }}
+                                    />
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Action Button */}
+                    <button 
+                        onClick={handleAddToBag}
+                        disabled={product.stock <= 0}
+                        className={`w-full py-6 font-black uppercase tracking-[0.3em] text-xs transition-all flex items-center justify-center gap-3 active:scale-95 ${
+                            product.stock <= 0 
+                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                            : 'bg-black text-white hover:bg-zinc-900 shadow-2xl shadow-black/20'
+                        }`}
+                    >
+                        <ShoppingBag size={18} /> 
+                        {product.stock <= 0 ? 'Out of Stock' : 'Add to Bag'}
+                    </button>
+
+                    {/* Trust Badges */}
+                    <div className="grid grid-cols-2 gap-4 mt-12 pt-8 border-t border-gray-100">
+                        <div className="flex items-center gap-3 text-[9px] font-black uppercase text-gray-500 tracking-[0.2em]">
+                            <Truck size={18} className="text-black" /> 24-48h Delivery
+                        </div>
+                        <div className="flex items-center gap-3 text-[9px] font-black uppercase text-gray-500 tracking-[0.2em]">
+                            <ShieldCheck size={18} className="text-black" /> Secure Checkout
                         </div>
                     </div>
                 </div>
