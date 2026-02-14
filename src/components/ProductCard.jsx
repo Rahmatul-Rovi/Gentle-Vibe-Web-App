@@ -20,7 +20,7 @@ const ProductCard = () => {
 
     // Increase function
     const handleIncrease = (id, e) => {
-        e.stopPropagation(); // Card-er onno click off rakhar jonno
+        e.stopPropagation();
         setProducts(prev => prev.map(item => 
             item._id === id ? { ...item, qty: item.qty + 1 } : item
         ));
@@ -28,10 +28,9 @@ const ProductCard = () => {
 
     // Decrease function (Fixing the delete issue)
     const handleDecrease = (id, e) => {
-        e.stopPropagation(); // Khub dorkari jate onno kisu trigger na hoy
+        e.stopPropagation();
         setProducts(prev => prev.map(item => {
             if (item._id === id) {
-                // Quantity 1 er boro holei shudhu kombe
                 return { ...item, qty: item.qty > 1 ? item.qty - 1 : 1 };
             }
             return item;

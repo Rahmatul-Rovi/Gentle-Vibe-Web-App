@@ -14,10 +14,8 @@ const Navbar = () => {
   const handleLogOut = () => {
     logOut()
       .then(() => {
-        // LocalStorage clean kora jeno refresh dileo data na thake
         localStorage.removeItem('user');
         localStorage.removeItem('token');
-        // Page full refresh kora security-r jonno bhalo
         window.location.href = "/login";
       })
       .catch(err => console.log(err));
@@ -74,12 +72,10 @@ const Navbar = () => {
                 <ul tabIndex={0} className="mt-3 z-[1] p-4 shadow-2xl menu menu-sm dropdown-content bg-white rounded-none w-52 border border-gray-50">
                   <li className="mb-2 px-2 py-1">
                     <span className="text-[10px] font-bold uppercase text-gray-400">Account</span>
-                    {/* User name display from context/localstorage */}
                     <p className="font-bold text-xs truncate">{user?.name || user?.displayName || "Gentle User"}</p>
                   </li>
                   <hr className="border-gray-50 my-1" />
                   
-                  {/* DYNAMIC DASHBOARD LINK: Role check kore link set kora hoyeche */}
                   <li>
                     <Link 
                         to={user?.role === 'admin' ? "/admin" : "/user/profile"} 
