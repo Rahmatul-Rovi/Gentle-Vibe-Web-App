@@ -1,86 +1,146 @@
 import React from 'react';
 import { useCart } from '../context/CartContext';
-import { Trash2, Plus, Minus, ArrowRight } from 'lucide-react';
+import { Trash2, Plus, Minus, ArrowRight, ShoppingBag } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const CartPage = () => {
+    // Context theke dorkari functions gulo niye nilam
     const { cart, addToCart, removeFromCart, clearCart } = useCart();
 
     // Calculate Subtotal
     const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
-    const shipping = 70; // Fixed shipping for premium feel
+    const shipping = cart.length > 0 ? 70 : 0; // Item thaklei shipping charge apply hobe
 
     if (cart.length === 0) {
         return (
             <div className="h-[70vh] flex flex-col items-center justify-center space-y-6">
-                <h2 className="text-4xl font-black uppercase italic text-gray-200">Your Bag is Empty</h2>
-                <Link to="/" className="bg-black text-white px-10 py-4 text-xs font-bold uppercase tracking-[0.2em] hover:bg-gray-800 transition-all">
-                    Start Shopping
+                <div className="bg-gray-50 p-10 rounded-full">
+                    <ShoppingBag size={80} className="text-gray-200" />
+                </div>
+                <h2 className="text-4xl font-black uppercase italic text-gray-300 tracking-tighter">Your Bag is Empty</h2>
+                <p className="text-gray-400 font-medium tracking-wide">Looks like you haven't added any vibes yet.</p>
+                <Link to="/shop" className="bg-black text-white px-10 py-4 text-xs font-black uppercase tracking-[0.3em] hover:bg-zinc-800 transition-all active:scale-95 shadow-xl">
+                    Back to Collection
                 </Link>
             </div>
         );
     }
 
     return (
-        <div className="max-w-7xl mx-auto px-4 py-20">
-            <h1 className="text-5xl font-black uppercase tracking-tighter italic mb-12">Your Bag</h1>
+        <div className="max-w-7xl mx-auto px-4 py-16 md:py-24">
+            <div className="flex justify-between items-end mb-12 border-b pb-8 border-gray-100">
+                <h1 className="text-5xl md:text-6xl font-black uppercase tracking-tighter italic leading-none text-black">
+                    Your <br /> Bag
+                </h1>
+                <button 
+                    onClick={clearCart}
+                    className="text-[10px] font-black uppercase tracking-widest text-red-500 hover:underline mb-2"
+                >
+                    Clear All
+                </button>
+            </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
-                {/* Left: Item List */}
-                <div className="lg:col-span-2 space-y-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-16 lg:gap-24">
+                
+                {/* --- LEFT: ITEM LIST --- */}
+                <div className="lg:col-span-2 space-y-10">
                     {cart.map((item) => (
-                        <div key={`${item._id}-${item.size}-${item.color}`} className="flex gap-6 border-b pb-8 border-gray-100">
-                            <div className="w-32 h-40 bg-gray-100 overflow-hidden">
-                                <img src={item.images[0]} alt="" className="w-full h-full object-cover" />
+                        <div 
+                            key={`${item._id}-${item.size}-${item.color}`} 
+                            className="flex gap-6 md:gap-8 group border-b border-gray-50 pb-10"
+                        >
+                            {/* Product Image */}
+                            <div className="w-28 h-36 md:w-40 md:h-52 bg-[#f9f9f9] overflow-hidden flex-shrink-0">
+                                <img 
+                                    src={item.images[0]} 
+                                    alt={item.name} 
+                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+                                />
                             </div>
                             
-                            <div className="flex-1 flex flex-col justify-between">
+                            {/* Product Info */}
+                            <div className="flex-1 flex flex-col justify-between py-1">
                                 <div>
-                                    <div className="flex justify-between">
-                                        <h3 className="font-bold uppercase text-sm">{item.name}</h3>
-                                        <button onClick={() => removeFromCart(item._id, item.size, item.color)} className="text-gray-400 hover:text-red-500 transition-colors">
+                                    <div className="flex justify-between items-start">
+                                        <div>
+                                            <h3 className="font-black uppercase text-base md:text-lg tracking-tight leading-none mb-2">{item.name}</h3>
+                                            <p className="text-[10px] text-gray-400 font-black uppercase tracking-[0.2em]">
+                                                {item.size} / {item.color}
+                                            </p>
+                                        </div>
+                                        {/* Full Delete Button (Passing 'true' for full remove) */}
+                                        <button 
+                                            onClick={() => removeFromCart(item._id, item.size, item.color, true)} 
+                                            className="text-gray-300 hover:text-black transition-colors"
+                                        >
                                             <Trash2 size={18} />
                                         </button>
                                     </div>
-                                    <p className="text-[10px] text-gray-400 font-bold uppercase mt-1 tracking-widest">
-                                        Size: {item.size} | Color: {item.color}
-                                    </p>
                                 </div>
 
-                                <div className="flex justify-between items-end">
-                                    <div className="flex items-center border border-black px-3 py-1 gap-4">
-                                        <button onClick={() => removeFromCart(item._id, item.size, item.color)}><Minus size={14}/></button>
-                                        <span className="text-sm font-bold">{item.quantity}</span>
-                                        <button onClick={() => addToCart(item, item.size, item.color)}><Plus size={14}/></button>
+                                <div className="flex justify-between items-center mt-6">
+                                    {/* Quantity Selector */}
+                                    <div className="flex items-center border border-black h-10 px-4 gap-6">
+                                        <button 
+                                            className="hover:scale-125 transition-transform"
+                                            onClick={() => removeFromCart(item._id, item.size, item.color)}
+                                        >
+                                            <Minus size={14}/>
+                                        </button>
+                                        <span className="text-sm font-black w-4 text-center">{item.quantity}</span>
+                                        <button 
+                                            className="hover:scale-125 transition-transform"
+                                            onClick={() => addToCart(item, item.size, item.color)}
+                                        >
+                                            <Plus size={14}/>
+                                        </button>
                                     </div>
-                                    <p className="font-black">${item.price * item.quantity}</p>
+                                    
+                                    {/* Subtotal for this item */}
+                                    <p className="font-black text-lg md:text-xl">৳{item.price * item.quantity}</p>
                                 </div>
                             </div>
                         </div>
                     ))}
                 </div>
 
-                {/* Right: Order Summary */}
-                <div className="bg-gray-50 p-8 h-fit space-y-6">
-                    <h3 className="font-black uppercase tracking-widest text-sm">Order Summary</h3>
-                    <div className="space-y-4 border-b pb-6">
-                        <div className="flex justify-between text-sm">
-                            <span className="text-gray-500 uppercase font-bold text-[10px]">Subtotal</span>
-                            <span className="font-bold">${subtotal}</span>
+                {/* --- RIGHT: ORDER SUMMARY --- */}
+                <div className="relative">
+                    <div className="bg-gray-50 p-8 sticky top-24 space-y-8">
+                        <h3 className="font-black uppercase tracking-[0.2em] text-[10px] text-gray-400">Order Summary</h3>
+                        
+                        <div className="space-y-4">
+                            <div className="flex justify-between items-center text-sm">
+                                <span className="text-gray-500 font-bold uppercase text-[10px] tracking-widest">Subtotal</span>
+                                <span className="font-black">৳{subtotal}</span>
+                            </div>
+                            <div className="flex justify-between items-center text-sm">
+                                <span className="text-gray-500 font-bold uppercase text-[10px] tracking-widest">Shipping</span>
+                                <span className="font-black">৳{shipping}</span>
+                            </div>
+                            <div className="h-[1px] bg-gray-200 my-4" />
+                            <div className="flex justify-between items-center pt-2">
+                                <span className="font-black uppercase italic text-lg tracking-tighter">Total</span>
+                                <span className="text-3xl font-black">৳{subtotal + shipping}</span>
+                            </div>
                         </div>
-                        <div className="flex justify-between text-sm">
-                            <span className="text-gray-500 uppercase font-bold text-[10px]">Shipping</span>
-                            <span className="font-bold">${shipping}</span>
+
+                        <div className="pt-4 space-y-4">
+                            <Link 
+                                to="/checkout" 
+                                className="w-full bg-black text-white py-5 flex items-center justify-center gap-3 font-black uppercase text-xs tracking-[0.2em] hover:bg-zinc-800 transition-all shadow-2xl shadow-black/10 active:scale-95"
+                            >
+                                Checkout <ArrowRight size={16} />
+                            </Link>
+                            
+                            <p className="text-[9px] text-gray-400 font-medium text-center leading-relaxed">
+                                Shipping, duties and taxes calculated at checkout.<br />
+                                100% Secure payment via SSLCommerz.
+                            </p>
                         </div>
                     </div>
-                    <div className="flex justify-between items-center py-2">
-                        <span className="font-black uppercase italic">Total</span>
-                        <span className="text-2xl font-black">${subtotal + shipping}</span>
-                    </div>
-                    <Link to="/checkout" className="w-full bg-black text-white py-5 flex items-center justify-center gap-3 font-black uppercase text-xs tracking-widest hover:bg-gray-800 transition-all">
-                        Checkout <ArrowRight size={16} />
-                    </Link>
                 </div>
+
             </div>
         </div>
     );
