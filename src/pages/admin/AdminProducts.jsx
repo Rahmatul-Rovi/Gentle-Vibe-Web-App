@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Trash2, Edit, Plus, Package, Eye } from "lucide-react";
-import { Link } from "react-router-dom"; // Navigation er jonno
+import { Trash2, Edit, Plus, Package, Eye, RefreshCw } from "lucide-react"; // RefreshCw আইকন যোগ করলাম
+import { Link } from "react-router-dom";
 import Swal from 'sweetalert2';
 
 const AdminProducts = () => {
@@ -23,7 +23,7 @@ const AdminProducts = () => {
     fetchProducts();
   }, []);
 
-  // --- View Product SweetAlert ---
+  // --- View & Update Stock SweetAlert ---
   const handleView = (product) => {
     Swal.fire({
       title: `<span style="text-transform: uppercase; font-weight: 900;">${product.name}</span>`,
@@ -32,16 +32,59 @@ const AdminProducts = () => {
           <img src="${product.images[0]}" style="width: 100%; border-radius: 15px; margin-bottom: 15px; border: 1px solid #eee;" />
           <p><strong>Category:</strong> ${product.category.toUpperCase()}</p>
           <p><strong>Price:</strong> ৳${product.price}</p>
-          <p><strong>Stock:</strong> ${product.stock} pcs</p>
-          <p><strong>Description:</strong> ${product.description}</p>
+          <p style="font-size: 1.2rem; margin-bottom: 10px;">
+            <strong>Current Stock:</strong> 
+            <span class="${product.stock < 5 ? 'text-danger' : 'text-success'}" style="font-weight: bold;">
+              ${product.stock} pcs
+            </span>
+          </p>
+          <hr />
+          <div style="margin-top: 15px; background: #f9f9f9; padding: 10px; border-radius: 10px;">
+            <label style="font-weight: bold; display: block; margin-bottom: 5px;">ADD NEW STOCK (Quantity):</label>
+            <input type="number" id="new-stock" class="swal2-input" placeholder="Enter amount to add" style="width: 80%; margin: 5px auto;">
+          </div>
         </div>
       `,
-      confirmButtonText: 'CLOSE',
+      showCancelButton: true,
+      confirmButtonText: 'UPDATE STOCK',
+      cancelButtonText: 'CLOSE',
       confirmButtonColor: '#000',
+      preConfirm: () => {
+        const addedQuantity = Swal.getPopup().querySelector('#new-stock').value;
+        if (!addedQuantity || addedQuantity <= 0) {
+          // যদি এডমিন কিছু না লিখে শুধু CLOSE করতে চায়
+          return null; 
+        }
+        return { addedQuantity: parseInt(addedQuantity) };
+      }
+    }).then(async (result) => {
+      // যদি এডমিন আপডেট বাটনে ক্লিক করে এবং ভ্যালু দেয়
+      if (result.isConfirmed && result.value) {
+        try {
+          // আপনার ব্যাকএন্ড রাউটে স্টক কমানোর লজিক আছে ($inc: -quantity)
+          // তাই আমরা মাইনাস ভ্যালু পাঠাবো যাতে মাইনাসে মাইনাসে প্লাস হয়ে স্টক বেড়ে যায়।
+          // অথবা আপনার ব্যাকএন্ডে $inc: quantity থাকলে সরাসরি পাঠাতাম।
+          // আপনার PATCH রাউট অনুযায়ী: product.stock -= quantity;
+          // তাই স্টক বাড়াতে হলে আমাদের quantity নেগেটিভ পাঠাতে হবে।
+          
+          const updateAmount = -result.value.addedQuantity; 
+
+          const res = await axios.patch(`http://localhost:5000/api/products/${product._id}/stock`, {
+            quantity: updateAmount
+          });
+
+          if (res.data.success) {
+            Swal.fire('Updated!', 'Stock has been increased.', 'success');
+            fetchProducts(); // টেবিল রিফ্রেশ করার জন্য
+          }
+        } catch (err) {
+          Swal.fire('Error!', 'Failed to update stock.', 'error');
+        }
+      }
     });
   };
 
-  // --- Delete Product with SweetAlert ---
+  // ... (handleDelete এবং loading state আগের মতোই থাকবে)
   const handleDelete = async (id) => {
     Swal.fire({
       title: 'Are you sure?',
@@ -51,19 +94,13 @@ const AdminProducts = () => {
       confirmButtonColor: '#000',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Yes, delete it!',
-      background: '#fff',
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
           const res = await axios.delete(`http://localhost:5000/api/products/${id}`);
           if (res.data.success) {
             setProducts(products.filter((p) => p._id !== id));
-            Swal.fire({
-              title: 'Deleted!',
-              text: 'Product has been removed.',
-              icon: 'success',
-              confirmButtonColor: '#000',
-            });
+            Swal.fire('Deleted!', 'Product has been removed.', 'success');
           }
         } catch (err) {
           Swal.fire('Error!', 'Failed to delete product.', 'error');
@@ -80,13 +117,12 @@ const AdminProducts = () => {
 
   return (
     <div className="p-8 bg-[#f8fafc] min-h-screen">
+      {/* Header section remains same */}
       <div className="flex justify-between items-center mb-10">
         <div>
           <h1 className="text-4xl font-black text-slate-900 tracking-tighter uppercase italic">Inventory</h1>
           <p className="text-slate-500 text-sm font-medium">Manage your {products.length} products</p>
         </div>
-        
-        {/* --- Add New Product Button Link --- */}
         <Link to="/admin/add-product">
           <button className="bg-black text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-slate-800 transition-all shadow-lg active:scale-95">
             <Plus size={20} /> Add New Product
@@ -137,14 +173,14 @@ const AdminProducts = () => {
                 </td>
                 <td className="px-8 py-5 text-right">
                   <div className="flex justify-end gap-2">
-                    {/* View Button */}
                     <button 
                       onClick={() => handleView(product)}
-                      className="p-3 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm"
+                      className="p-3 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm flex items-center gap-1"
+                      title="View & Update Stock"
                     >
                       <Eye size={18} />
+                      <span className="text-[10px] font-bold">STOCK</span>
                     </button>
-                    {/* Delete Button */}
                     <button 
                       onClick={() => handleDelete(product._id)}
                       className="p-3 bg-rose-50 text-rose-500 rounded-xl hover:bg-rose-500 hover:text-white transition-all shadow-sm"
