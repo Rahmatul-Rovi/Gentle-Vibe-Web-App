@@ -38,6 +38,7 @@ const Navbar = () => {
                 <li><Link to="/collections/mens">Mens</Link></li>
                 <li><Link to="/collections/womens">Womens</Link></li>
                 <li><Link to="/collections/new-arrival">New Arrival</Link></li>
+                 <li><Link to="/testimonials">Testimonials</Link></li>
               </ul>
             </div>
             <Link to="/" className="text-2xl font-black tracking-tighter cursor-pointer">
@@ -53,6 +54,7 @@ const Navbar = () => {
               <li><Link to="/collections/mens" className="text-[13px] font-bold uppercase tracking-widest hover:text-gray-500 transition-colors">Mens</Link></li>
               <li><Link to="/collections/womens" className="text-[13px] font-bold uppercase tracking-widest hover:text-gray-500 transition-colors">Womens</Link></li>
               <li><Link to="/collections/new-arrival" className="text-[13px] font-bold uppercase tracking-widest hover:text-gray-500 transition-colors">New Arrival</Link></li>
+              <li><Link to="/testimonials" className="text-[13px] font-bold uppercase tracking-widest hover:text-gray-500 transition-colors">Testimonials</Link></li>
             </ul>
           </div>
 
