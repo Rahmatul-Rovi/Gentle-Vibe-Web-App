@@ -1,15 +1,15 @@
 import React from 'react';
 import { useCart } from '../context/CartContext';
-import { Trash2, Plus, Minus, ArrowRight, ShoppingBag } from 'lucide-react';
+import { Trash2, Plus, Minus, ArrowRight, ShoppingBag, AlertCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const CartPage = () => {
-    // Context theke dorkari functions gulo niye nilam
     const { cart, addToCart, removeFromCart, clearCart } = useCart();
 
-    // Calculate Subtotal
+    const isStockExceeded = cart.some(item => item.quantity > item.stock);
+
     const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
-    const shipping = cart.length > 0 ? 70 : 0; // Item thaklei shipping charge apply hobe
+    const shipping = cart.length > 0 ? 70 : 0;
 
     if (cart.length === 0) {
         return (
@@ -47,9 +47,8 @@ const CartPage = () => {
                     {cart.map((item) => (
                         <div 
                             key={`${item._id}-${item.size}-${item.color}`} 
-                            className="flex gap-6 md:gap-8 group border-b border-gray-50 pb-10"
+                            className={`flex gap-6 md:gap-8 group border-b pb-10 transition-all ${item.quantity > item.stock ? 'border-red-100 bg-red-50/30 p-4 -m-4' : 'border-gray-50'}`}
                         >
-                            {/* Product Image */}
                             <div className="w-28 h-36 md:w-40 md:h-52 bg-[#f9f9f9] overflow-hidden flex-shrink-0">
                                 <img 
                                     src={item.images[0]} 
@@ -58,7 +57,6 @@ const CartPage = () => {
                                 />
                             </div>
                             
-                            {/* Product Info */}
                             <div className="flex-1 flex flex-col justify-between py-1">
                                 <div>
                                     <div className="flex justify-between items-start">
@@ -67,8 +65,15 @@ const CartPage = () => {
                                             <p className="text-[10px] text-gray-400 font-black uppercase tracking-[0.2em]">
                                                 {item.size} / {item.color}
                                             </p>
+                                            
+                                            {/* Stock warning message */}
+                                            {item.quantity >= item.stock && (
+                                                <p className="text-[9px] text-orange-600 font-bold mt-2 flex items-center gap-1 uppercase">
+                                                    <AlertCircle size={10} /> 
+                                                    {item.quantity > item.stock ? "Exceeds available stock!" : `Only ${item.stock} left in stock`}
+                                                </p>
+                                            )}
                                         </div>
-                                        {/* Full Delete Button (Passing 'true' for full remove) */}
                                         <button 
                                             onClick={() => removeFromCart(item._id, item.size, item.color, true)} 
                                             className="text-gray-300 hover:text-black transition-colors"
@@ -79,7 +84,6 @@ const CartPage = () => {
                                 </div>
 
                                 <div className="flex justify-between items-center mt-6">
-                                    {/* Quantity Selector */}
                                     <div className="flex items-center border border-black h-10 px-4 gap-6">
                                         <button 
                                             className="hover:scale-125 transition-transform"
@@ -87,16 +91,18 @@ const CartPage = () => {
                                         >
                                             <Minus size={14}/>
                                         </button>
-                                        <span className="text-sm font-black w-4 text-center">{item.quantity}</span>
+                                        <span className={`text-sm font-black w-4 text-center ${item.quantity > item.stock ? 'text-red-600' : ''}`}>
+                                            {item.quantity}
+                                        </span>
                                         <button 
-                                            className="hover:scale-125 transition-transform"
+                                            // Plus button disabel after stcok clear
+                                            disabled={item.quantity >= item.stock}
+                                            className={`transition-transform ${item.quantity >= item.stock ? 'opacity-20 cursor-not-allowed' : 'hover:scale-125'}`}
                                             onClick={() => addToCart(item, item.size, item.color)}
                                         >
                                             <Plus size={14}/>
                                         </button>
                                     </div>
-                                    
-                                    {/* Subtotal for this item */}
                                     <p className="font-black text-lg md:text-xl">৳{item.price * item.quantity}</p>
                                 </div>
                             </div>
@@ -126,12 +132,24 @@ const CartPage = () => {
                         </div>
 
                         <div className="pt-4 space-y-4">
+                            {/* ৪. চেকআউট বাটন ডিজেবল হবে যদি কোনো আইটেম স্টকের বেশি থাকে */}
                             <Link 
-                                to="/checkout" 
-                                className="w-full bg-black text-white py-5 flex items-center justify-center gap-3 font-black uppercase text-xs tracking-[0.2em] hover:bg-zinc-800 transition-all shadow-2xl shadow-black/10 active:scale-95"
+                                to={isStockExceeded ? "#" : "/checkout"} 
+                                onClick={(e) => isStockExceeded && e.preventDefault()}
+                                className={`w-full py-5 flex items-center justify-center gap-3 font-black uppercase text-xs tracking-[0.2em] transition-all shadow-2xl shadow-black/10 active:scale-95 ${
+                                    isStockExceeded 
+                                    ? 'bg-gray-300 cursor-not-allowed text-gray-500' 
+                                    : 'bg-black text-white hover:bg-zinc-800'
+                                }`}
                             >
-                                Checkout <ArrowRight size={16} />
+                                {isStockExceeded ? "Update Cart to Checkout" : "Checkout"} <ArrowRight size={16} />
                             </Link>
+                            
+                            {isStockExceeded && (
+                                <p className="text-red-500 text-[10px] font-bold text-center animate-pulse">
+                                    Some items are out of stock or exceed limit!
+                                </p>
+                            )}
                             
                             <p className="text-[9px] text-gray-400 font-medium text-center leading-relaxed">
                                 Shipping, duties and taxes calculated at checkout.<br />
