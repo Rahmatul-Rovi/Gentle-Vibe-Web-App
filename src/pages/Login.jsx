@@ -15,26 +15,24 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            // 1. Firebase login prothome
             await signInWithEmailAndPassword(auth, email, password);
 
-            // 2. MongoDB theke role-shoho user data ana
             const res = await axios.post('http://localhost:5000/api/login', { email, password });
             
             const userData = res.data.user;
             
-            // 3. Browser-e data save kora (Refresh korle login thakar jonno)
             localStorage.setItem('token', res.data.token);
             localStorage.setItem('user', JSON.stringify(userData));
 
-            // Context update kora (Navbar-e admin/user dashboard link sathe sathe change hobe)
             setUser(userData);
 
-            // 4. Role-based Redirection
+            // --- আপডেট করা রিডাইরেক্ট লজিক ---
             if (userData.role === 'admin') {
-                navigate('/admin'); // Admin hole admin panel-e
+                navigate('/admin'); 
+            } else if (userData.role === 'manager') {
+                navigate('/manager/dashboard'); // ম্যানেজার হলে এখানে যাবে
             } else {
-                navigate('/user/profile'); // Normal user hole user dashboard-e
+                navigate('/user/profile'); 
             }
 
             Swal.fire({
@@ -59,12 +57,11 @@ const Login = () => {
             const result = await signInWithPopup(auth, googleProvider);
             const loggedUser = result.user;
 
-            // Google user-ke database-e pathano ar role check kora
             const res = await axios.post('http://localhost:5000/api/register', {
                 name: loggedUser.displayName,
                 email: loggedUser.email,
                 photoURL: loggedUser.photoURL,
-                password: 'google-auth-user', // Default password for Google users
+                password: 'google-auth-user',
             });
 
             const userData = res.data.user;
@@ -73,8 +70,11 @@ const Login = () => {
             
             setUser(userData); 
 
+            // --- আপডেট করা রিডাইরেক্ট লজিক (Google এর জন্যও) ---
             if (userData.role === 'admin') {
                 navigate('/admin');
+            } else if (userData.role === 'manager') {
+                navigate('/manager/dashboard'); // ম্যানেজার হলে এখানে যাবে
             } else {
                 navigate('/user/profile');
             }
