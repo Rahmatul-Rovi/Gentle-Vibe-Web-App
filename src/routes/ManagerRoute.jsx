@@ -7,8 +7,6 @@ const ManagerRoute = ({ children }) => {
     if (token && user?.role === "manager") {
         return children;
     }
-
     return <Navigate to="/login" replace />;
 };
-
 export default ManagerRoute;

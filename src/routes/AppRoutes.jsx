@@ -1,38 +1,52 @@
 import { createBrowserRouter } from "react-router-dom";
+
+// Layouts
 import MainLayout from "../layouts/MainLayout";
 import AdminLayout from "../layouts/AdminLayout";
+import ManagerLayout from "../layouts/ManagerLayout"; // ইম্পোর্ট নিশ্চিত করুন
+import UserLayout from "../layouts/UserLayout";
 
 // Pages
-import Hero from "../components/Hero";
-import Categories from "../components/Categories";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
-import AdminDashboard from "../pages/admin/AdminDashboard";
-import ManagerOrders from "../pages/manager/ManagerOrders";
-import AddProduct from "../pages/admin/AddProduct";
+import Home from "../pages/Home";
+import Shop from "../pages/Shop.jsx";
 import ProductList from "../components/ProductList";
 import ProductDetails from "../components/ProductDetails";
 import CartPage from "../pages/CartPage";
 import Checkout from "../pages/Checkout";
+import PaymentSuccess from "../pages/PaymentSuccess.jsx";
+import Testimonials from "../pages/Testimonials.jsx";
+
+// Admin Pages
+import AdminDashboard from "../pages/admin/AdminDashboard";
+import AddProduct from "../pages/admin/AddProduct";
 import AdminProducts from "../pages/admin/AdminProducts";
 import AdminOrders from "../pages/admin/AdminOrders";
 import AdminUsers from "../pages/admin/AdminUsers";
 import MakeAdmin from "../pages/admin/MakeAdmin";
 import AdminProfile from "../pages/admin/AdminProfile";
-import Home from "../pages/Home";
-import UserLayout from "../layouts/UserLayout";
+import AdminReviews from "../pages/admin/AdminReviews.jsx";
+import POS from "../pages/admin/Pos.jsx"; // অ্যাডমিনের POS
+
+// Manager Pages
+import ManagerDashboard from "../pages/manager/ManagerDashboard";
+import ManagerAddProduct from "../pages/manager/ManagerAddProduct";
+import ManagerProducts from "../pages/manager/ManagerProducts";
+import ManagerOrders from "../pages/manager/ManagerOrders";
+import ManagerPOS from "../pages/manager/ManagerPOS"; // ম্যানেজারের POS
+import ManagerProfile from "../pages/manager/ManagerProfile";
+
+// User Pages
 import UserDashboard from "../pages/user/UserDashboard";
 import UserProfile from "../pages/user/UserProfile";
 import UserOrder from "../pages/user/UserOrder.jsx";
-// Upore baki import gulor niche eigula add koro:
+import MyReview from "../pages/user/MyReview.jsx";
+
+// Route Protectors
 import UserRoute from "../routes/UserRoute"; 
 import AdminRoute from "../routes/AdminRoute";
-import Shop from "../pages/Shop.jsx";
-import PaymentSuccess from "../pages/PaymentSuccess.jsx";
-import Testimonials from "../pages/Testimonials.jsx";
-import MyReview from "../pages/user/MyReview.jsx";
-import AdminReviews from "../pages/admin/AdminReviews.jsx";
-import POS from "../pages/admin/Pos.jsx";
+import ManagerRoute from "../routes/ManagerRoute"; // ইম্পোর্ট নিশ্চিত করুন
 
 const router = createBrowserRouter([
   {
@@ -45,10 +59,9 @@ const router = createBrowserRouter([
       { path: "product/:id", element: <ProductDetails /> },
       { path: "shop", element: <ProductList /> },
       { path: "cart", element: <CartPage /> },
-      { path: "checkout", element: <UserRoute><Checkout /></UserRoute> }, // In Checkout UserRoute must
-      {path: "shop", element: <Shop></Shop> },
-      { path: "collections/:category", element: <Shop /> }, // Dynamic (Mens, Womens, New Arrival)
-      { path: "testimonials", element: <Testimonials></Testimonials> }
+      { path: "checkout", element: <UserRoute><Checkout /></UserRoute> },
+      { path: "collections/:category", element: <Shop /> },
+      { path: "testimonials", element: <Testimonials /> }
     ],
   },
   {
@@ -62,26 +75,34 @@ const router = createBrowserRouter([
       { path: "users", element: <AdminUsers /> },
       { path: "make-admin", element: <MakeAdmin /> },
       { path: "profile", element: <AdminProfile /> },
-      { path: "reviews", element: <AdminReviews></AdminReviews> },
-      {path: "pos", element: <POS></POS>}
+      { path: "reviews", element: <AdminReviews /> },
+      { path: "pos", element: <POS /> }
     ],
   },
-
- // --- Manager Routes (Fix করা হয়েছে) ---
- 
-
+  {
+    path: "/manager",
+    element: <ManagerRoute><ManagerLayout /></ManagerRoute>,
+    children: [
+      { index: true, element: <ManagerDashboard /> },
+      { path: "dashboard", element: <ManagerDashboard /> },
+      { path: "pos", element: <ManagerPOS /> },
+      { path: "add-product", element: <ManagerAddProduct /> },
+      { path: "products", element: <ManagerProducts /> },
+      { path: "orders", element: <ManagerOrders /> },
+      { path: "profile", element: <ManagerProfile /> },
+    ],
+  },
   {
     path: "/user",
-    element: <UserRoute><UserLayout /></UserRoute>, // Normal logged in user-er dashboard
+    element: <UserRoute><UserLayout /></UserRoute>,
     children: [
       { index: true, element: <UserDashboard /> },
       { path: "profile", element: <UserProfile /> },
       { path: "orders", element: <UserOrder /> },
-      { path: "my-reviews", element: <MyReview></MyReview> }
-     
+      { path: "my-reviews", element: <MyReview /> }
     ] 
   },
-   {path: "/payment/success/:tranId", element: <PaymentSuccess></PaymentSuccess>},
+  { path: "/payment/success/:tranId", element: <PaymentSuccess /> },
   {
     path: "*",
     element: <div className="h-screen flex items-center justify-center font-black">404 - NOT FOUND</div>,
