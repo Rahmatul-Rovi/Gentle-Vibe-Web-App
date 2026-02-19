@@ -8,7 +8,7 @@ const BrandStory = () => {
           <div className="relative">
              <div className="absolute -top-10 -left-10 text-[150px] font-black opacity-10 leading-none select-none">GV</div>
              <h2 className="text-5xl md:text-6xl font-black uppercase tracking-tighter italic leading-none mb-8">
-                Gentle Vibe <br /> Philosophy
+                ONE POINT PLUS <br /> Philosophy
              </h2>
              <p className="text-gray-400 text-lg leading-relaxed mb-6">
                 We believe that fashion is more than just clothing; it's an expression of identity. 

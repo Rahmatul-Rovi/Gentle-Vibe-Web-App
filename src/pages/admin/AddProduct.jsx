@@ -53,7 +53,7 @@ const AddProduct = () => {
                 Swal.fire({
                     icon: 'success',
                     title: 'Published!',
-                    text: 'Product added to Gentle Vibe collection.',
+                    text: 'Product added to ONE POINT PLUS collection.',
                     confirmButtonColor: '#000', // Black button to match your theme
                     background: '#fff',
                 });

@@ -48,7 +48,7 @@ const UserLayout = () => {
                 {/* Logo Section */}
                 <Link to="/">
                     <div className="p-10">
-                        <h2 className="text-2xl font-black uppercase italic tracking-tighter leading-none">Gentle Vibe</h2>
+                        <h2 className="text-2xl font-black uppercase italic tracking-tighter leading-none">ONE POINT PLUS</h2>
                         <p className="text-[9px] text-gray-500 uppercase tracking-[0.4em] mt-2 font-bold">User Dashboard</p>
                     </div>
                 </Link>

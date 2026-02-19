@@ -88,7 +88,7 @@ const Login = () => {
         <div className="min-h-[80vh] flex items-center justify-center bg-white px-4 py-10">
             <div className="max-w-md w-full border border-gray-100 p-10 shadow-sm animate-in fade-in zoom-in duration-500">
                 <h2 className="text-4xl font-bold uppercase tracking-tighter mb-2 text-center text-black">Login</h2>
-                <p className="text-gray-400 text-center mb-8 text-xs uppercase tracking-widest">Gentle Vibe Apparel</p>
+                <p className="text-gray-400 text-center mb-8 text-xs uppercase tracking-widest">ONE POINT PLUS Apparel</p>
 
                 <form className="space-y-5" onSubmit={handleLogin}>
                     <div className="space-y-1">

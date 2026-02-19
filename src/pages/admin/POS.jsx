@@ -180,7 +180,7 @@ const POS = () => {
       {/* প্রিন্ট মেমো */}
       <div id="printable-memo" className="hidden print:block p-10 text-black">
         <div className="text-center mb-6">
-          <h1 className="text-2xl font-black uppercase">GENTLE VIBE CLOTHING</h1>
+          <h1 className="text-2xl font-black uppercase">ONE POINT PLUS CLOTHING</h1>
           <p className="text-sm">Official Invoice - Admin Copy</p>
         </div>
         <hr className="border-black mb-4" />

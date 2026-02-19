@@ -298,7 +298,7 @@ const ManagerPOS = () => {
       {/* PRINT SECTION */}
       <div style={{ display: "none" }}>
         <div ref={componentRef} className="p-6 text-black bg-white w-[80mm] mx-auto">
-          <h1 className="text-center font-black mb-4">GENTLE VIBE</h1>
+          <h1 className="text-center font-black mb-4">ONE POINT PLUS</h1>
 
           <div className="flex justify-between text-xs mb-4">
             <span>INV: #{invoiceNumber}</span>

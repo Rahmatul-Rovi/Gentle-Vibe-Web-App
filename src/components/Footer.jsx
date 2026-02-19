@@ -10,7 +10,7 @@ const Footer = () => {
           
           {/* Brand Identity */}
           <div className="space-y-6">
-            <h2 className="text-3xl font-black italic tracking-tighter uppercase">Gentle Vibe</h2>
+            <h2 className="text-3xl font-black italic tracking-tighter uppercase">ONE POINT PLUS</h2>
             <p className="text-gray-400 text-sm leading-relaxed uppercase tracking-wider">
               Elevating streetwear through minimalism and quality craftsmanship. Designed for those who move in silence.
             </p>
@@ -66,7 +66,7 @@ const Footer = () => {
 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-black uppercase tracking-[0.3em] text-gray-500">
-          <p>© 2026 GENTLE VIBE. ALL RIGHTS RESERVED.</p>
+          <p>© 2026 ONE POINT PLUS. ALL RIGHTS RESERVED.</p>
           <div className="flex gap-6">
             <span>Privacy Policy</span>
             <span>Terms of Service</span>
