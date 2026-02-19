@@ -32,6 +32,7 @@ import PaymentSuccess from "../pages/PaymentSuccess.jsx";
 import Testimonials from "../pages/Testimonials.jsx";
 import MyReview from "../pages/user/MyReview.jsx";
 import AdminReviews from "../pages/admin/AdminReviews.jsx";
+import POS from "../pages/admin/Pos.jsx";
 
 const router = createBrowserRouter([
   {
@@ -61,7 +62,8 @@ const router = createBrowserRouter([
       { path: "users", element: <AdminUsers /> },
       { path: "make-admin", element: <MakeAdmin /> },
       { path: "profile", element: <AdminProfile /> },
-      { path: "reviews", element: <AdminReviews></AdminReviews> }
+      { path: "reviews", element: <AdminReviews></AdminReviews> },
+      {path: "pos", element: <POS></POS>}
     ],
   },
   {

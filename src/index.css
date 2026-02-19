@@ -14,3 +14,19 @@
 .nav-link {
   @apply text-[13px] font-medium uppercase tracking-wider hover:text-gray-500 transition-colors;
 }
+
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #printable-memo, #printable-memo * {
+    visibility: visible;
+  }
+  #printable-memo {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+}
