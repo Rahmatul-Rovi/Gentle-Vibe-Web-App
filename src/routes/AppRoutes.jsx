@@ -66,6 +66,10 @@ const router = createBrowserRouter([
       {path: "pos", element: <POS></POS>}
     ],
   },
+
+ // --- Manager Routes (Fix করা হয়েছে) ---
+ 
+
   {
     path: "/user",
     element: <UserRoute><UserLayout /></UserRoute>, // Normal logged in user-er dashboard
