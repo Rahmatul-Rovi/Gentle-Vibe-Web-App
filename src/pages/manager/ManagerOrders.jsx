@@ -28,7 +28,7 @@ const ManagerOrders = () => {
       const res = await axios.put(`http://localhost:5000/api/admin/orders/${id}`, { status: newStatus });
       if (res.data.success) {
         Swal.fire("Updated!", `Order status is now ${newStatus}`, "success");
-        fetchOrders(); // লিস্ট রিফ্রেশ করা
+        fetchOrders(); 
       }
     } catch (err) {
       Swal.fire("Error", "Failed to update status", "error");

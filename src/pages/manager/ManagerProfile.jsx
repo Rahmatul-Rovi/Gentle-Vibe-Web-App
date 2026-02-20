@@ -96,13 +96,11 @@ const ManagerProfile = () => {
       </div>
 
       <form onSubmit={handleUpdate} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* বাম পাশ: প্রোফাইল কার্ড */}
         <div className="lg:col-span-1">
           <div className="bg-white p-8 rounded-[40px] border border-slate-100 shadow-sm text-center relative overflow-hidden group">
             <div className="absolute top-0 left-0 w-full h-24 bg-slate-900"></div>
             <div className="relative z-10">
               <div className="w-32 h-32 bg-white rounded-full mx-auto p-1 mb-4 shadow-xl relative">
-                {/* ইমেজ বা ডিফল্ট আইকন */}
                 <div className="w-full h-full bg-slate-100 rounded-full flex items-center justify-center overflow-hidden">
                   {previewImage || user.image ? (
                     <img src={previewImage || user.image} alt="Profile" className="w-full h-full object-cover" />
@@ -111,7 +109,6 @@ const ManagerProfile = () => {
                   )}
                 </div>
                 
-                {/* ইমেজ আপলোড ইনপুট (হিডেন) */}
                 <label className="absolute inset-0 bg-black/40 rounded-full opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center text-white cursor-pointer">
                   <Camera size={24} />
                   <input 
@@ -142,7 +139,6 @@ const ManagerProfile = () => {
           </div>
         </div>
 
-        {/* ডান পাশ: এডিট ফর্ম */}
         <div className="lg:col-span-2">
           <div className="bg-white p-8 md:p-10 rounded-[40px] border border-slate-100 shadow-sm space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
