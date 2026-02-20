@@ -122,7 +122,6 @@ const ProductCard = () => {
                             <p className="text-[10px] text-gray-400 uppercase tracking-widest mb-1">{item.category}</p>
                             <h3 className="font-bold uppercase text-sm tracking-tight">{item.name}</h3>
                             
-                            {/* ✅ ডিসকাউন্ট প্রাইস সেকশন এখানে বসানো হয়েছে */}
                             <div className="mt-2 flex flex-col items-center">
                                 {item.discount > 0 ? (
                                     <>

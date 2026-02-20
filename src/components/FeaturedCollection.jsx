@@ -10,7 +10,7 @@ const FeaturedCollection = () => {
     const fetchProducts = async () => {
       try {
         const res = await axios.get('http://localhost:5000/api/products');
-        setProducts(res.data.slice(0, 4)); // Shudhu top 4 products dekhabo
+        setProducts(res.data.slice(0, 4)); 
       } catch (err) {
         console.error("Error fetching featured products", err);
       }

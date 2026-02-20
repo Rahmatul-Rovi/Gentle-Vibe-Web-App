@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowUpRight } from 'lucide-react'; // Ekta sleek icon-er jonno
+import { ArrowUpRight } from 'lucide-react'; 
 
 const Categories = () => {
   const cats = [
@@ -12,7 +12,7 @@ const Categories = () => {
    { 
   name: 'Womens Wear', 
   path: '/collections/womens',
-  // Hijab pora elegant ar marjito chobi
+  
   img: 'https://images.unsplash.com/photo-1544441893-675973e31985?q=80&w=1935&auto=format&fit=crop' 
 },
     { 
@@ -23,7 +23,7 @@ const Categories = () => {
   ];
 
   return (
-    <div className="py-32 bg-[#fafafa]"> {/* Background-ta aktu off-white rakhlam premium look-er jonno */}
+    <div className="py-32 bg-[#fafafa]"> 
       <div className="container mx-auto px-6">
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-16">
