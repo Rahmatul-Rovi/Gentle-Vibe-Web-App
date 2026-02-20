@@ -49,15 +49,15 @@ const Footer = () => {
             <ul className="space-y-4 text-sm text-gray-400">
               <li className="flex items-center gap-3">
                 <MapPin size={18} className="text-white" />
-                <span>Banani, Dhaka, Bangladesh</span>
+                <span>City Centre, Ground Floor Aurangzeb Road, Pabna</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone size={18} className="text-white" />
-                <span>+880 1234 567 890</span>
+                <span>01719456261</span>
               </li>
               <li className="flex items-center gap-3">
                 <Mail size={18} className="text-white" />
-                <span>support@gentlevibe.com</span>
+                <span>support@onepointplus.com</span>
               </li>
             </ul>
           </div>
