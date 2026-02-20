@@ -7,6 +7,7 @@ import {
   ShoppingCart,
   User,
   Phone,
+  Tag,
 } from "lucide-react";
 import Swal from "sweetalert2";
 import { useReactToPrint } from "react-to-print";
@@ -16,6 +17,7 @@ const ManagerPOS = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [cart, setCart] = useState([]);
   const [customer, setCustomer] = useState({ name: "", phone: "" });
+  const [manualDiscount, setManualDiscount] = useState(0); // ম্যানুয়াল ডিসকাউন্ট স্টেট
   const [invoiceNumber, setInvoiceNumber] = useState("");
   const searchInputRef = useRef(null);
   const componentRef = useRef(null);
@@ -31,7 +33,6 @@ const ManagerPOS = () => {
     if (searchInputRef.current) searchInputRef.current.focus();
   }, []);
 
-  // ✅ লেটেস্ট react-to-print কনফিগারেশন
   const handlePrint = useReactToPrint({
     contentRef: componentRef,
     documentTitle: `Invoice_${invoiceNumber}`,
@@ -60,6 +61,13 @@ const ManagerPOS = () => {
       Swal.fire("Out of Stock", `${product.name} is unavailable`, "warning");
       return;
     }
+    
+    // প্রোডাক্টে ডিসকাউন্ট থাকলে সেই প্রাইস ক্যালকুলেট করা
+    const hasDiscount = product.discount && product.discount > 0;
+    const finalPrice = hasDiscount 
+        ? Math.round(product.price - (product.price * product.discount / 100)) 
+        : product.price;
+
     const existing = cart.find((item) => item._id === product._id);
     if (existing) {
       if (existing.quantity >= product.stock) {
@@ -74,7 +82,7 @@ const ManagerPOS = () => {
         ),
       );
     } else {
-      setCart([...cart, { ...product, quantity: 1 }]);
+      setCart([...cart, { ...product, finalPrice, quantity: 1 }]);
     }
     setQuery("");
     setSearchResults([]);
@@ -85,23 +93,22 @@ const ManagerPOS = () => {
     setCart(cart.filter((item) => item._id !== id));
   };
 
-  const totalAmount = useMemo(() => {
-    return cart.reduce((total, item) => total + item.price * item.quantity, 0);
+  // সাবটোটাল (প্রোডাক্ট ডিসকাউন্ট সহ কিন্তু ম্যানুয়াল ডিসকাউন্ট বাদে)
+  const subtotal = useMemo(() => {
+    return cart.reduce((total, item) => total + item.finalPrice * item.quantity, 0);
   }, [cart]);
+
+  // ফাইনাল পেয়েবল (সাবটোটাল - ম্যানুয়াল ডিসকাউন্ট)
+  const netPayable = useMemo(() => {
+    const total = subtotal - Number(manualDiscount);
+    return total > 0 ? total : 0;
+  }, [subtotal, manualDiscount]);
 
   const handleCheckout = async () => {
     if (cart.length === 0)
-      return Swal.fire(
-        "Empty Cart",
-        "প্রথমে কার্টে প্রোডাক্ট যোগ করুন!",
-        "warning",
-      );
+      return Swal.fire("Empty Cart", "Please Add Product!", "warning");
     if (!customer.phone)
-      return Swal.fire(
-        "Phone Required",
-        "কাস্টমারের মোবাইল নম্বর দিন",
-        "warning",
-      );
+      return Swal.fire("Phone Required", "Enter Customer Mobile Number", "warning");
 
     try {
       const payload = {
@@ -109,72 +116,48 @@ const ManagerPOS = () => {
           _id: item._id,
           name: item.name,
           quantity: Number(item.quantity),
-          price: Number(item.price),
+          price: Number(item.finalPrice), // ডিসকাউন্টেড প্রাইস যাচ্ছে
+          originalPrice: Number(item.price),
+          images: item.images
         })),
         customerName: customer.name || "Walk-in Guest",
         customerPhone: customer.phone,
+        subtotal: subtotal,
+        manualDiscount: Number(manualDiscount),
+        totalAmount: netPayable,
       };
 
-      const res = await axios.post(
-        "http://localhost:5000/api/pos/create-bill",
-        payload,
-      );
+      const res = await axios.post("http://localhost:5000/api/pos/create-bill", payload);
 
       if (res.data.success) {
-        await Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: "Bill Created Successfully!",
-          timer: 800,
-          showConfirmButton: false,
-        });
+        await Swal.fire({ icon: "success", title: "Bill Created!", timer: 800, showConfirmButton: false });
 
-        // ✅ লাইব্রেরি ছাড়া সরাসরি প্রিন্ট করার নির্ভরযোগ্য উপায়:
-        // ✅ রিসিটটিকে মাঝখানে আনার জন্য সংশোধিত কোড
         const printContent = componentRef.current.innerHTML;
         const printWindow = window.open("", "_blank", "width=800,height=600");
         printWindow.document.write(`
-  <html>
-    <head>
-      <title>Print Invoice</title>
-      <script src="https://cdn.tailwindcss.com"></script>
-      <style>
-        @page { 
-            size: 80mm auto; 
-            margin: 0; 
-        }
-        body { 
-            font-family: 'Courier New', Courier, monospace; 
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center; /* মাঝখানে আনার জন্য */
-        }
-        .receipt-container {
-            width: 80mm;
-            padding: 10px;
-            background: white;
-        }
-      </style>
-    </head>
-    <body>
-      <div class="receipt-container">
-        ${printContent}
-      </div>
-      <script>
-        setTimeout(() => {
-          window.print();
-          window.close();
-        }, 500);
-      </script>
-    </body>
-  </html>
-`);
+          <html>
+            <head>
+              <title>Print Invoice</title>
+              <script src="https://cdn.tailwindcss.com"></script>
+              <style>
+                @page { size: 80mm auto; margin: 0; }
+                body { font-family: 'Courier New', monospace; display: flex; justify-content: center; }
+                .receipt-container { width: 80mm; padding: 10px; background: white; }
+              </style>
+            </head>
+            <body>
+              <div class="receipt-container">${printContent}</div>
+              <script>
+                setTimeout(() => { window.print(); window.close(); }, 500);
+              </script>
+            </body>
+          </html>
+        `);
         printWindow.document.close();
 
-        // স্টেট রিসেট
         setCart([]);
         setCustomer({ name: "", phone: "" });
+        setManualDiscount(0);
         setInvoiceNumber(`POS${Date.now().toString().slice(-6)}`);
       }
     } catch (err) {
@@ -191,9 +174,7 @@ const ManagerPOS = () => {
           <h1 className="text-2xl font-black uppercase tracking-tighter flex items-center gap-2 text-slate-800">
             <ShoppingCart className="text-blue-600" /> POS SYSTEM
           </h1>
-          <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">
-            Operator: {user?.name || "Cashier"}
-          </p>
+          <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Operator: {user?.name || "Cashier"}</p>
         </div>
         <div className="text-right">
           <p className="text-xs font-bold text-slate-400">INVOICE NO</p>
@@ -205,15 +186,10 @@ const ManagerPOS = () => {
         {/* Left Side: Search & Cart */}
         <div className="flex-1 space-y-4">
           <div className="relative">
-            <Search
-              className="absolute left-4 top-4 text-slate-400"
-              size={20}
-            />
+            <Search className="absolute left-4 top-4 text-slate-400" size={20} />
             <input
               ref={searchInputRef}
               type="text"
-              name="productSearch" // ✅ Name added
-              id="productSearch" // ✅ ID added
               className="w-full pl-12 pr-4 py-4 bg-white shadow-sm rounded-2xl outline-none font-bold"
               placeholder="Search Product..."
               value={query}
@@ -227,7 +203,10 @@ const ManagerPOS = () => {
                     onClick={() => addToCart(p)}
                     className="p-4 hover:bg-blue-600 hover:text-white cursor-pointer transition-all flex justify-between items-center"
                   >
-                    <span>{p.name}</span>
+                    <div className="flex flex-col">
+                        <span className="font-bold">{p.name}</span>
+                        {p.discount > 0 && <span className="text-[10px] bg-rose-500 text-white w-fit px-1">{p.discount}% OFF</span>}
+                    </div>
                     <span className="font-black">৳{p.price}</span>
                   </div>
                 ))}
@@ -249,19 +228,15 @@ const ManagerPOS = () => {
               <tbody className="divide-y divide-slate-50">
                 {cart.map((item) => (
                   <tr key={item._id} className="font-bold text-slate-700">
-                    <td className="px-6 py-4 text-sm uppercase">{item.name}</td>
-                    <td className="px-6 py-4 text-center">৳{item.price}</td>
-                    <td className="px-6 py-4 text-center">{item.quantity}</td>
-                    <td className="px-6 py-4 text-right italic">
-                      ৳{item.price * item.quantity}
+                    <td className="px-6 py-4 text-sm uppercase">
+                        {item.name}
+                        {item.discount > 0 && <p className="text-[9px] text-rose-500 italic">(-{item.discount}%)</p>}
                     </td>
+                    <td className="px-6 py-4 text-center">৳{item.finalPrice}</td>
+                    <td className="px-6 py-4 text-center">{item.quantity}</td>
+                    <td className="px-6 py-4 text-right italic">৳{item.finalPrice * item.quantity}</td>
                     <td className="px-6 py-4 text-right">
-                      <button
-                        onClick={() => removeFromCart(item._id)}
-                        className="text-rose-500 p-2"
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                      <button onClick={() => removeFromCart(item._id)} className="text-rose-500 p-2"><Trash2 size={16} /></button>
                     </td>
                   </tr>
                 ))}
@@ -273,59 +248,64 @@ const ManagerPOS = () => {
         {/* Right Side: Customer & Checkout */}
         <div className="w-full lg:w-96">
           <div className="bg-slate-900 text-white p-6 rounded-[32px] shadow-xl">
-            <h3 className="font-black uppercase text-slate-400 text-[10px] tracking-[3px] mb-6">
-              Customer Details
-            </h3>
-            <div className="space-y-4 mb-8">
+            <h3 className="font-black uppercase text-slate-400 text-[10px] tracking-[3px] mb-6">Customer Details</h3>
+            <div className="space-y-4 mb-6">
               <input
                 type="text"
-                name="customerName" // ✅ Name added
-                id="customerName" // ✅ ID added
                 className="w-full bg-slate-800 rounded-xl py-3 px-4 text-white outline-none"
-                placeholder="Guest Name"
+                placeholder="Customer Name"
                 value={customer.name}
-                onChange={(e) =>
-                  setCustomer({ ...customer, name: e.target.value })
-                }
+                onChange={(e) => setCustomer({ ...customer, name: e.target.value })}
               />
               <input
                 type="text"
-                name="customerPhone" // ✅ Name added
-                id="customerPhone" // ✅ ID added
                 className="w-full bg-slate-800 rounded-xl py-3 px-4 text-white outline-none"
-                placeholder="Phone Number *"
+                placeholder="Customer Phone"
                 value={customer.phone}
-                onChange={(e) =>
-                  setCustomer({ ...customer, phone: e.target.value })
-                }
+                onChange={(e) => setCustomer({ ...customer, phone: e.target.value })}
               />
             </div>
-            <div className="border-t border-slate-800 pt-6 mb-8 flex justify-between items-end">
-              <span className="text-slate-400 font-bold text-xs uppercase">
-                Net Payable
-              </span>
-              <span className="text-4xl font-black text-emerald-400 italic">
-                ৳{totalAmount}
-              </span>
+
+            <h3 className="font-black uppercase text-slate-400 text-[10px] tracking-[3px] mb-4">Discount (Flat)</h3>
+            <div className="relative mb-8">
+                <Tag size={16} className="absolute left-4 top-3.5 text-slate-500" />
+                <input
+                    type="number"
+                    className="w-full bg-slate-800 rounded-xl py-3 pl-10 pr-4 text-emerald-400 font-bold outline-none"
+                    placeholder="Enter Discount Amount"
+                    value={manualDiscount}
+                    onChange={(e) => setManualDiscount(e.target.value)}
+                />
             </div>
+
+            <div className="border-t border-slate-800 pt-6 space-y-2 mb-8">
+              <div className="flex justify-between items-center text-slate-400 text-xs font-bold uppercase">
+                <span>Subtotal</span>
+                <span>৳{subtotal}</span>
+              </div>
+              <div className="flex justify-between items-center text-rose-400 text-xs font-bold uppercase">
+                <span>Discount</span>
+                <span>-৳{manualDiscount || 0}</span>
+              </div>
+              <div className="flex justify-between items-end pt-2">
+                <span className="text-slate-400 font-bold text-xs uppercase">Net Payable</span>
+                <span className="text-4xl font-black text-emerald-400 italic">৳{netPayable}</span>
+              </div>
+            </div>
+
             <button
               onClick={handleCheckout}
-              className="w-full bg-blue-600 text-white py-5 rounded-2xl font-black text-lg hover:bg-emerald-500 flex items-center justify-center gap-3 active:scale-95"
+              className="w-full bg-blue-600 text-white py-5 rounded-2xl font-black text-lg hover:bg-blue-500 flex items-center justify-center gap-3 active:scale-95 transition-all"
             >
-              <Printer size={22} /> SETTLE & PRINT
+              <Printer size={22} /> Generate & PRINT
             </button>
           </div>
         </div>
       </div>
 
-      {/* ✅ প্রিন্ট সেকশন (Hidden but accessible to react-to-print) */}
+      {/* ✅ প্রিন্ট সেকশন */}
       <div style={{ position: "absolute", left: "-9999px", top: 0 }}>
-        <div
-          ref={componentRef}
-          id="printable-invoice"
-          className="p-4 text-black bg-white w-[80mm] font-mono"
-        >
-          {/* রিসিট ডিজাইন */}
+        <div ref={componentRef} className="p-4 text-black bg-white w-[80mm] font-mono">
           <div className="text-center mb-4">
             <h1 className="text-xl font-bold uppercase">ONE POINT PLUS</h1>
             <p className="text-[10px]">Sector-07, Uttara, Dhaka</p>
@@ -334,14 +314,8 @@ const ManagerPOS = () => {
           </div>
 
           <div className="mb-2 space-y-1 text-[10px]">
-            <div className="flex justify-between">
-              <span>Inv: #{invoiceNumber}</span>
-              <span>Date: {new Date().toLocaleDateString()}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Cashier: {user?.name || "Admin"}</span>
-              <span>Time: {new Date().toLocaleTimeString()}</span>
-            </div>
+            <div className="flex justify-between"><span>Inv: #{invoiceNumber}</span><span>Date: {new Date().toLocaleDateString()}</span></div>
+            <p>Cashier: {user?.name || "Admin"}</p>
             <div className="border-b border-black border-dotted my-1"></div>
             <p>Customer: {customer.name || "Walk-in"}</p>
             <p>Phone: {customer.phone || "N/A"}</p>
@@ -349,26 +323,27 @@ const ManagerPOS = () => {
 
           <div className="border-t border-b border-black border-dashed py-2 my-2">
             {cart.map((item, i) => (
-              <div key={i} className="mb-2">
+              <div key={i} className="mb-2 text-[10px]">
                 <p className="uppercase font-bold">{item.name}</p>
                 <div className="flex justify-between">
-                  <span>
-                    {item.quantity} x {item.price}
-                  </span>
-                  <span>৳{item.price * item.quantity}</span>
+                  <span>{item.quantity} x {item.finalPrice}</span>
+                  <span>৳{item.finalPrice * item.quantity}</span>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="flex justify-between text-[14px] font-black border-b border-black border-double pb-1">
-            <span>GRAND TOTAL</span>
-            <span>৳{totalAmount}.00</span>
+          <div className="space-y-1 text-[11px] font-bold">
+             <div className="flex justify-between"><span>SUBTOTAL</span><span>৳{subtotal}.00</span></div>
+             {manualDiscount > 0 && <div className="flex justify-between text-rose-600"><span>DISCOUNT</span><span>-৳{manualDiscount}.00</span></div>}
+             <div className="flex justify-between text-[14px] font-black border-t border-black border-double pt-1">
+                <span>GRAND TOTAL</span><span>৳{netPayable}.00</span>
+             </div>
           </div>
 
           <div className="mt-6 text-center pt-4 border-t border-black border-dashed">
             <p className="text-[11px] font-bold uppercase">Thank You!</p>
-            <p className="text-[9px] mt-1 italic">Software by: OnePointPOS</p>
+            <p className="text-[9px] mt-1 italic">Software by: OnePointPlus</p>
           </div>
         </div>
       </div>

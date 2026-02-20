@@ -10,7 +10,7 @@ const ProductDetails = () => {
     const [product, setProduct] = useState(null);
     const [selectedSize, setSelectedSize] = useState("");
     const [selectedColor, setSelectedColor] = useState("");
-    const [mainImage, setMainImage] = useState(""); // Image sync state
+    const [mainImage, setMainImage] = useState(""); 
     
     const { addToCart } = useCart();
 
@@ -33,10 +33,8 @@ const ProductDetails = () => {
         fetchProduct();
     }, [id]);
 
-    // Color click korle image sync hobar logic
     const handleColorClick = (color, index) => {
         setSelectedColor(color);
-        // Jodi images array-te color sequence thake, tobe image-o change hobe
         if (product.images[index]) {
             setMainImage(product.images[index]);
         }
@@ -77,6 +75,12 @@ const ProductDetails = () => {
         </div>
     );
 
+    // Discount Calculation
+    const hasDiscount = product.discount && product.discount > 0;
+    const discountedPrice = hasDiscount 
+        ? Math.round(product.price - (product.price * product.discount / 100)) 
+        : product.price;
+
     return (
         <div className="max-w-7xl mx-auto px-4 py-10 md:py-20">
             {/* Back Button */}
@@ -99,9 +103,15 @@ const ProductDetails = () => {
                                 <span className="bg-white text-black px-8 py-3 font-black uppercase tracking-[0.3em] text-xs">Sold Out</span>
                             </div>
                         )}
+                        {/* Discount Badge on Image */}
+                        {hasDiscount && product.stock > 0 && (
+                            <div className="absolute top-4 left-4 bg-rose-600 text-white px-3 py-1 font-black text-[10px] uppercase tracking-widest animate-pulse">
+                                {product.discount}% OFF
+                            </div>
+                        )}
                     </div>
 
-                    {/* Thumbnails - Clicking changes Main Image */}
+                    {/* Thumbnails */}
                     <div className="flex gap-3 overflow-x-auto pb-2">
                         {product.images.map((img, idx) => (
                             <button 
@@ -123,7 +133,23 @@ const ProductDetails = () => {
                     <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter mb-4 italic leading-none">
                         {product.name}
                     </h1>
-                    <p className="text-2xl font-bold mb-8 text-black/80">৳{product.price}</p>
+
+                    {/* --- PRICE LOGIC --- */}
+                    <div className="mb-8">
+                        {hasDiscount ? (
+                            <div className="flex flex-col gap-1">
+                                <div className="flex items-center gap-4">
+                                    <span className="text-4xl font-black text-emerald-600 italic">৳{discountedPrice}</span>
+                                    <span className="text-xl text-gray-400 line-through font-bold">৳{product.price}</span>
+                                </div>
+                                <p className="text-[10px] font-black text-rose-500 uppercase tracking-widest">
+                                    You save ৳{product.price - discountedPrice}
+                                </p>
+                            </div>
+                        ) : (
+                            <p className="text-3xl font-bold text-black/80 italic">৳{product.price}</p>
+                        )}
+                    </div>
                     
                     <div className="h-[1px] bg-gray-100 w-full mb-8" />
 
@@ -150,7 +176,7 @@ const ProductDetails = () => {
                         </div>
                     </div>
 
-                    {/* Color Selection - Click handles both selection and image sync */}
+                    {/* Color Selection */}
                     <div className="mb-12">
                         <p className="text-[10px] font-black uppercase mb-4 tracking-widest text-black">Available Colors</p>
                         <div className="flex gap-4">

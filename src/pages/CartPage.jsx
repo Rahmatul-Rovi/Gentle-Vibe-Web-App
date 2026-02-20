@@ -8,7 +8,15 @@ const CartPage = () => {
 
     const isStockExceeded = cart.some(item => item.quantity > item.stock);
 
-    const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+    // ১. ডিসকাউন্ট সহ সাবটোটাল ক্যালকুলেশন
+    const subtotal = cart.reduce((total, item) => {
+        const hasDiscount = item.discount && item.discount > 0;
+        const currentPrice = hasDiscount 
+            ? Math.round(item.price - (item.price * item.discount / 100)) 
+            : item.price;
+        return total + (currentPrice * item.quantity);
+    }, 0);
+
     const shipping = cart.length > 0 ? 70 : 0;
 
     if (cart.length === 0) {
@@ -44,70 +52,86 @@ const CartPage = () => {
                 
                 {/* --- LEFT: ITEM LIST --- */}
                 <div className="lg:col-span-2 space-y-10">
-                    {cart.map((item) => (
-                        <div 
-                            key={`${item._id}-${item.size}-${item.color}`} 
-                            className={`flex gap-6 md:gap-8 group border-b pb-10 transition-all ${item.quantity > item.stock ? 'border-red-100 bg-red-50/30 p-4 -m-4' : 'border-gray-50'}`}
-                        >
-                            <div className="w-28 h-36 md:w-40 md:h-52 bg-[#f9f9f9] overflow-hidden flex-shrink-0">
-                                <img 
-                                    src={item.images[0]} 
-                                    alt={item.name} 
-                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
-                                />
-                            </div>
-                            
-                            <div className="flex-1 flex flex-col justify-between py-1">
-                                <div>
-                                    <div className="flex justify-between items-start">
-                                        <div>
-                                            <h3 className="font-black uppercase text-base md:text-lg tracking-tight leading-none mb-2">{item.name}</h3>
-                                            <p className="text-[10px] text-gray-400 font-black uppercase tracking-[0.2em]">
-                                                {item.size} / {item.color}
-                                            </p>
-                                            
-                                            {/* Stock warning message */}
-                                            {item.quantity >= item.stock && (
-                                                <p className="text-[9px] text-orange-600 font-bold mt-2 flex items-center gap-1 uppercase">
-                                                    <AlertCircle size={10} /> 
-                                                    {item.quantity > item.stock ? "Exceeds available stock!" : `Only ${item.stock} left in stock`}
-                                                </p>
-                                            )}
-                                        </div>
-                                        <button 
-                                            onClick={() => removeFromCart(item._id, item.size, item.color, true)} 
-                                            className="text-gray-300 hover:text-black transition-colors"
-                                        >
-                                            <Trash2 size={18} />
-                                        </button>
-                                    </div>
-                                </div>
+                    {cart.map((item) => {
+                        // আইটেম লেভেলে ডিসকাউন্ট চেক
+                        const hasDiscount = item.discount && item.discount > 0;
+                        const itemUnitPrice = hasDiscount 
+                            ? Math.round(item.price - (item.price * item.discount / 100)) 
+                            : item.price;
 
-                                <div className="flex justify-between items-center mt-6">
-                                    <div className="flex items-center border border-black h-10 px-4 gap-6">
-                                        <button 
-                                            className="hover:scale-125 transition-transform"
-                                            onClick={() => removeFromCart(item._id, item.size, item.color)}
-                                        >
-                                            <Minus size={14}/>
-                                        </button>
-                                        <span className={`text-sm font-black w-4 text-center ${item.quantity > item.stock ? 'text-red-600' : ''}`}>
-                                            {item.quantity}
-                                        </span>
-                                        <button 
-                                            // Plus button disabel after stcok clear
-                                            disabled={item.quantity >= item.stock}
-                                            className={`transition-transform ${item.quantity >= item.stock ? 'opacity-20 cursor-not-allowed' : 'hover:scale-125'}`}
-                                            onClick={() => addToCart(item, item.size, item.color)}
-                                        >
-                                            <Plus size={14}/>
-                                        </button>
+                        return (
+                            <div 
+                                key={`${item._id}-${item.size}-${item.color}`} 
+                                className={`flex gap-6 md:gap-8 group border-b pb-10 transition-all ${item.quantity > item.stock ? 'border-red-100 bg-red-50/30 p-4 -m-4' : 'border-gray-50'}`}
+                            >
+                                <div className="w-28 h-36 md:w-40 md:h-52 bg-[#f9f9f9] overflow-hidden flex-shrink-0 relative">
+                                    <img 
+                                        src={item.images[0]} 
+                                        alt={item.name} 
+                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+                                    />
+                                    {hasDiscount && (
+                                        <div className="absolute top-0 left-0 bg-rose-500 text-white text-[8px] font-black px-2 py-1 uppercase">
+                                            {item.discount}% OFF
+                                        </div>
+                                    )}
+                                </div>
+                                
+                                <div className="flex-1 flex flex-col justify-between py-1">
+                                    <div>
+                                        <div className="flex justify-between items-start">
+                                            <div>
+                                                <h3 className="font-black uppercase text-base md:text-lg tracking-tight leading-none mb-2">{item.name}</h3>
+                                                <p className="text-[10px] text-gray-400 font-black uppercase tracking-[0.2em]">
+                                                    {item.size} / {item.color}
+                                                </p>
+                                                
+                                                {item.quantity >= item.stock && (
+                                                    <p className="text-[9px] text-orange-600 font-bold mt-2 flex items-center gap-1 uppercase">
+                                                        <AlertCircle size={10} /> 
+                                                        {item.quantity > item.stock ? "Exceeds available stock!" : `Only ${item.stock} left in stock`}
+                                                    </p>
+                                                )}
+                                            </div>
+                                            <button 
+                                                onClick={() => removeFromCart(item._id, item.size, item.color, true)} 
+                                                className="text-gray-300 hover:text-black transition-colors"
+                                            >
+                                                <Trash2 size={18} />
+                                            </button>
+                                        </div>
                                     </div>
-                                    <p className="font-black text-lg md:text-xl">৳{item.price * item.quantity}</p>
+
+                                    <div className="flex justify-between items-end mt-6">
+                                        <div className="flex items-center border border-black h-10 px-4 gap-6">
+                                            <button 
+                                                className="hover:scale-125 transition-transform"
+                                                onClick={() => removeFromCart(item._id, item.size, item.color)}
+                                            >
+                                                <Minus size={14}/>
+                                            </button>
+                                            <span className={`text-sm font-black w-4 text-center ${item.quantity > item.stock ? 'text-red-600' : ''}`}>
+                                                {item.quantity}
+                                            </span>
+                                            <button 
+                                                disabled={item.quantity >= item.stock}
+                                                className={`transition-transform ${item.quantity >= item.stock ? 'opacity-20 cursor-not-allowed' : 'hover:scale-125'}`}
+                                                onClick={() => addToCart(item, item.size, item.color)}
+                                            >
+                                                <Plus size={14}/>
+                                            </button>
+                                        </div>
+                                        <div className="text-right">
+                                            {hasDiscount && (
+                                                <p className="text-[10px] text-gray-400 line-through font-bold">৳{item.price * item.quantity}</p>
+                                            )}
+                                            <p className="font-black text-lg md:text-xl text-black">৳{itemUnitPrice * item.quantity}</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
 
                 {/* --- RIGHT: ORDER SUMMARY --- */}
@@ -132,14 +156,13 @@ const CartPage = () => {
                         </div>
 
                         <div className="pt-4 space-y-4">
-                            {/* ৪. চেকআউট বাটন ডিজেবল হবে যদি কোনো আইটেম স্টকের বেশি থাকে */}
                             <Link 
                                 to={isStockExceeded ? "#" : "/checkout"} 
                                 onClick={(e) => isStockExceeded && e.preventDefault()}
                                 className={`w-full py-5 flex items-center justify-center gap-3 font-black uppercase text-xs tracking-[0.2em] transition-all shadow-2xl shadow-black/10 active:scale-95 ${
                                     isStockExceeded 
                                     ? 'bg-gray-300 cursor-not-allowed text-gray-500' 
-                                    : 'bg-black text-white hover:bg-zinc-800'
+                                    : 'bg-black text-white hover:bg-zinc-900'
                                 }`}
                             >
                                 {isStockExceeded ? "Update Cart to Checkout" : "Checkout"} <ArrowRight size={16} />

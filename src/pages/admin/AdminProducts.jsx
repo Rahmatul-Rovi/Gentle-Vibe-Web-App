@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Trash2, Edit, Plus, Package, Eye, RefreshCw } from "lucide-react"; // RefreshCw আইকন যোগ করলাম
+import { Trash2, Edit, Plus, Package, Eye, Tag } from "lucide-react"; 
 import { Link } from "react-router-dom";
 import Swal from 'sweetalert2';
 
@@ -23,15 +23,22 @@ const AdminProducts = () => {
     fetchProducts();
   }, []);
 
-  // --- View & Update Stock SweetAlert ---
   const handleView = (product) => {
+    const finalPrice = product.discount > 0 
+      ? Math.round(product.price - (product.price * product.discount / 100)) 
+      : product.price;
+
     Swal.fire({
       title: `<span style="text-transform: uppercase; font-weight: 900;">${product.name}</span>`,
       html: `
         <div style="text-align: left; font-family: sans-serif;">
           <img src="${product.images[0]}" style="width: 100%; border-radius: 15px; margin-bottom: 15px; border: 1px solid #eee;" />
-          <p><strong>Category:</strong> ${product.category.toUpperCase()}</p>
-          <p><strong>Price:</strong> ৳${product.price}</p>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+             <span><strong>Category:</strong> ${product.category.toUpperCase()}</span>
+             <span style="color: #e11d48; font-weight: bold;">${product.discount}% OFF</span>
+          </div>
+          <p><strong>Original Price:</strong> ৳${product.price}</p>
+          <p><strong>Final Sale Price:</strong> ৳${finalPrice}</p>
           <p style="font-size: 1.2rem; margin-bottom: 10px;">
             <strong>Current Stock:</strong> 
             <span class="${product.stock < 5 ? 'text-danger' : 'text-success'}" style="font-weight: bold;">
@@ -51,31 +58,19 @@ const AdminProducts = () => {
       confirmButtonColor: '#000',
       preConfirm: () => {
         const addedQuantity = Swal.getPopup().querySelector('#new-stock').value;
-        if (!addedQuantity || addedQuantity <= 0) {
-          // যদি এডমিন কিছু না লিখে শুধু CLOSE করতে চায়
-          return null; 
-        }
+        if (!addedQuantity || addedQuantity <= 0) return null; 
         return { addedQuantity: parseInt(addedQuantity) };
       }
     }).then(async (result) => {
-      // যদি এডমিন আপডেট বাটনে ক্লিক করে এবং ভ্যালু দেয়
       if (result.isConfirmed && result.value) {
         try {
-          // আপনার ব্যাকএন্ড রাউটে স্টক কমানোর লজিক আছে ($inc: -quantity)
-          // তাই আমরা মাইনাস ভ্যালু পাঠাবো যাতে মাইনাসে মাইনাসে প্লাস হয়ে স্টক বেড়ে যায়।
-          // অথবা আপনার ব্যাকএন্ডে $inc: quantity থাকলে সরাসরি পাঠাতাম।
-          // আপনার PATCH রাউট অনুযায়ী: product.stock -= quantity;
-          // তাই স্টক বাড়াতে হলে আমাদের quantity নেগেটিভ পাঠাতে হবে।
-          
           const updateAmount = -result.value.addedQuantity; 
-
           const res = await axios.patch(`http://localhost:5000/api/products/${product._id}/stock`, {
             quantity: updateAmount
           });
-
           if (res.data.success) {
             Swal.fire('Updated!', 'Stock has been increased.', 'success');
-            fetchProducts(); // টেবিল রিফ্রেশ করার জন্য
+            fetchProducts();
           }
         } catch (err) {
           Swal.fire('Error!', 'Failed to update stock.', 'error');
@@ -84,7 +79,6 @@ const AdminProducts = () => {
     });
   };
 
-  // ... (handleDelete এবং loading state আগের মতোই থাকবে)
   const handleDelete = async (id) => {
     Swal.fire({
       title: 'Are you sure?',
@@ -117,7 +111,7 @@ const AdminProducts = () => {
 
   return (
     <div className="p-8 bg-[#f8fafc] min-h-screen">
-      {/* Header section remains same */}
+      {/* Header */}
       <div className="flex justify-between items-center mb-10">
         <div>
           <h1 className="text-4xl font-black text-slate-900 tracking-tighter uppercase italic">Inventory</h1>
@@ -136,61 +130,85 @@ const AdminProducts = () => {
             <tr className="bg-slate-50 text-slate-400 text-[11px] uppercase tracking-[2px] font-black">
               <th className="px-8 py-5">Product</th>
               <th className="px-6 py-5">Category</th>
-              <th className="px-6 py-5">Price</th>
+              <th className="px-6 py-5">Price & Discount</th>
               <th className="px-6 py-5">Stock</th>
               <th className="px-8 py-5 text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {products.map((product) => (
-              <tr key={product._id} className="hover:bg-slate-50/50 transition-colors group">
-                <td className="px-8 py-5">
-                  <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 bg-slate-100 rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
-                      <img 
-                        src={product.images[0]} 
-                        alt={product.name} 
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      />
+            {products.map((product) => {
+              // ডিসকাউন্টেড প্রাইস ক্যালকুলেশন
+              const finalPrice = product.discount > 0 
+                ? Math.round(product.price - (product.price * product.discount / 100)) 
+                : product.price;
+
+              return (
+                <tr key={product._id} className="hover:bg-slate-50/50 transition-colors group">
+                  <td className="px-8 py-5">
+                    <div className="flex items-center gap-4">
+                      <div className="w-14 h-14 bg-slate-100 rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
+                        <img 
+                          src={product.images[0]} 
+                          alt={product.name} 
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        />
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-slate-800">{product.name}</h4>
+                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{product.subCategory || 'General'}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="font-bold text-slate-800">{product.name}</h4>
-                      <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{product.subCategory || 'General'}</p>
+                  </td>
+                  <td className="px-6 py-5">
+                    <span className="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-[11px] font-black uppercase tracking-tighter">
+                      {product.category}
+                    </span>
+                  </td>
+                  
+                  {/* --- Price & Discount Section --- */}
+                  <td className="px-6 py-5">
+                    <div className="flex flex-col">
+                      <span className="font-black text-slate-900 italic text-lg">৳{finalPrice}</span>
+                      {product.discount > 0 ? (
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] text-slate-400 line-through font-bold">৳{product.price}</span>
+                          <span className="text-[10px] bg-rose-50 text-rose-500 px-1.5 py-0.5 rounded font-black uppercase flex items-center gap-0.5">
+                            <Tag size={10} /> {product.discount}% OFF
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-[10px] text-slate-400 font-bold italic">No Discount</span>
+                      )}
                     </div>
-                  </div>
-                </td>
-                <td className="px-6 py-5">
-                  <span className="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-[11px] font-black uppercase tracking-tighter">
-                    {product.category}
-                  </span>
-                </td>
-                <td className="px-6 py-5 font-black text-slate-900">৳{product.price}</td>
-                <td className="px-6 py-5">
-                  <div className={`flex items-center gap-2 text-sm font-bold ${product.stock < 5 ? 'text-rose-500 animate-pulse' : 'text-slate-600'}`}>
-                    <Package size={14} />
-                    {product.stock} pcs
-                  </div>
-                </td>
-                <td className="px-8 py-5 text-right">
-                  <div className="flex justify-end gap-2">
-                    <button 
-                      onClick={() => handleView(product)}
-                      className="p-3 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm flex items-center gap-1"
-                      title="View & Update Stock"
-                    >
-                      <Eye size={18} />
-                      <span className="text-[10px] font-bold">STOCK</span>
-                    </button>
-                    <button 
-                      onClick={() => handleDelete(product._id)}
-                      className="p-3 bg-rose-50 text-rose-500 rounded-xl hover:bg-rose-500 hover:text-white transition-all shadow-sm"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+                  </td>
+
+                  <td className="px-6 py-5">
+                    <div className={`flex items-center gap-2 text-sm font-bold ${product.stock < 5 ? 'text-rose-500 animate-pulse' : 'text-slate-600'}`}>
+                      <Package size={14} />
+                      {product.stock} pcs
+                    </div>
+                  </td>
+                  <td className="px-8 py-5 text-right">
+                    <div className="flex justify-end gap-2">
+                      <button 
+                        onClick={() => handleView(product)}
+                        className="p-3 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm flex items-center gap-1"
+                        title="View & Update Stock"
+                      >
+                        <Eye size={18} />
+                        <span className="text-[10px] font-bold">STOCK</span>
+                      </button>
+                      <button 
+                        onClick={() => handleDelete(product._id)}
+                        className="p-3 bg-rose-50 text-rose-500 rounded-xl hover:bg-rose-500 hover:text-white transition-all shadow-sm"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
