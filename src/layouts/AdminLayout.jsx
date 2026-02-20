@@ -14,7 +14,6 @@ import {
 const AdminLayout = () => {
   const location = useLocation();
 
-  // Active link check korar jonno ekta chotto function
   const isActive = (path) =>
     location.pathname === path
       ? "text-white bg-gray-900"
