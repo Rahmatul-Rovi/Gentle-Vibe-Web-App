@@ -26,11 +26,11 @@ const Login = () => {
 
             setUser(userData);
 
-            // --- আপডেট করা রিডাইরেক্ট লজিক ---
+            // ---Update Redirect Logic ---
             if (userData.role === 'admin') {
                 navigate('/admin'); 
             } else if (userData.role === 'manager') {
-                navigate('/manager/dashboard'); // ম্যানেজার হলে এখানে যাবে
+                navigate('/manager/dashboard'); 
             } else {
                 navigate('/user/profile'); 
             }
@@ -70,11 +70,11 @@ const Login = () => {
             
             setUser(userData); 
 
-            // --- আপডেট করা রিডাইরেক্ট লজিক (Google এর জন্যও) ---
+            // ---Update Redirect Logic to Google  ---
             if (userData.role === 'admin') {
                 navigate('/admin');
             } else if (userData.role === 'manager') {
-                navigate('/manager/dashboard'); // ম্যানেজার হলে এখানে যাবে
+                navigate('/manager/dashboard'); 
             } else {
                 navigate('/user/profile');
             }
@@ -95,7 +95,7 @@ const Login = () => {
                         <label className="text-[10px] font-black uppercase tracking-widest text-gray-400">Email Address</label>
                         <input 
                             type="email" 
-                            placeholder="YOUR@EMAIL.COM" 
+                            placeholder="Enter Your Email" 
                             className="input input-bordered rounded-none w-full focus:outline-black bg-white text-black font-bold" 
                             onChange={(e) => setEmail(e.target.value)} 
                             required 
@@ -105,7 +105,7 @@ const Login = () => {
                         <label className="text-[10px] font-black uppercase tracking-widest text-gray-400">Password</label>
                         <input 
                             type="password" 
-                            placeholder="••••••••" 
+                            placeholder="Enter Your Password" 
                             className="input input-bordered rounded-none w-full focus:outline-black bg-white text-black font-bold" 
                             onChange={(e) => setPassword(e.target.value)} 
                             required 
