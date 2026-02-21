@@ -10,14 +10,12 @@ const POS = () => {
   const [customer, setCustomer] = useState({ name: "", phone: "" });
   const searchInputRef = useRef(null);
 
-  // অটো ফোকাস ইনপুট (স্ক্যানারের জন্য)
   useEffect(() => {
     if (searchInputRef.current) {
       searchInputRef.current.focus();
     }
   }, []);
 
-  // রিয়েল টাইম সার্চ
   useEffect(() => {
     const delayDebounceFn = setTimeout(async () => {
       if (query.length > 1) {
@@ -34,7 +32,7 @@ const POS = () => {
     return () => clearTimeout(delayDebounceFn);
   }, [query]);
 
-  // কার্টে প্রোডাক্ট যোগ করা
+  // Product add to cart
   const addToCart = (product) => {
     const existing = cart.find((item) => item._id === product._id);
     if (existing) {
@@ -51,7 +49,7 @@ const POS = () => {
 
   const totalAmount = cart.reduce((total, item) => total + item.price * item.quantity, 0);
 
-  // প্রিন্ট এবং অর্ডার সাবমিট
+  // Print and order submit
   const handleCheckout = async () => {
     if (cart.length === 0) return Swal.fire("Empty Cart", "Add some products first!", "warning");
 
@@ -66,7 +64,7 @@ const POS = () => {
 
       if (res.data.success) {
         Swal.fire("Success!", "Bill Generated", "success").then(() => {
-          window.print(); // মেমো প্রিন্ট করার জন্য
+          window.print(); //for print memo
           setCart([]);
           setCustomer({ name: "", phone: "" });
         });
@@ -78,7 +76,7 @@ const POS = () => {
 
   return (
     <div className="p-6 bg-slate-50 min-h-screen flex flex-col md:flex-row gap-6">
-      {/* বাম পাশ: প্রোডাক্ট সার্চ ও সিলেকশন */}
+      {/* Product search and selection */}
       <div className="flex-1 space-y-4">
         <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
           <h2 className="text-xl font-black uppercase mb-4 flex items-center gap-2">
@@ -94,7 +92,7 @@ const POS = () => {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
-            {/* সার্চ রেজাল্ট ড্রপডাউন */}
+            {/* Search result dropdown */}
             {searchResults.length > 0 && (
               <div className="absolute w-full bg-white shadow-2xl rounded-2xl mt-2 z-50 border border-slate-100 overflow-hidden">
                 {searchResults.map((p) => (
@@ -112,7 +110,7 @@ const POS = () => {
           </div>
         </div>
 
-        {/* কার্ট টেবিল */}
+        {/* Cart table */}
         <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
           <table className="w-full text-left">
             <thead className="bg-slate-50 border-b border-slate-100">
@@ -143,7 +141,7 @@ const POS = () => {
         </div>
       </div>
 
-      {/* ডান পাশ: কাস্টমার ও বিলিং */}
+      {/* Customer booking and billing */}
       <div className="w-full md:w-96 space-y-4">
         <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 space-y-4">
           <h3 className="font-black uppercase text-slate-400 text-xs tracking-widest">Customer Details</h3>
@@ -177,7 +175,7 @@ const POS = () => {
         </div>
       </div>
 
-      {/* প্রিন্ট মেমো */}
+      {/* Print memo */}
       <div id="printable-memo" className="hidden print:block p-10 text-black">
         <div className="text-center mb-6">
           <h1 className="text-2xl font-black uppercase">ONE POINT PLUS CLOTHING</h1>

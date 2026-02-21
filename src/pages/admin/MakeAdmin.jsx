@@ -36,7 +36,6 @@ const MakeAdmin = () => {
         try {
           const res = await axios.patch(`http://localhost:5000/api/admin/users/${userId}/role`, { role: newRole });
           if (res.data.success) {
-            // Update local state
             setUsers(users.map(u => u._id === userId ? { ...u, role: newRole } : u));
             Swal.fire('Success!', `User is now an ${newRole}`, 'success');
           }

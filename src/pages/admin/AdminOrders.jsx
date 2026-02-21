@@ -21,7 +21,6 @@ const AdminOrders = () => {
   useEffect(() => { fetchOrders(); }, []);
 
   const viewOrderDetails = (order) => {
-    // POS এ দেওয়া ম্যানুয়াল ডিসকাউন্ট এবং প্রোডাক্ট ডিসকাউন্ট সব হিসাব করে সাবটোটাল বের করা
     const discountAmount = order.manualDiscount || 0;
     
     const productList = order.products.map(p => {

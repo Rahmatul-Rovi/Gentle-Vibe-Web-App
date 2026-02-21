@@ -137,7 +137,6 @@ const AdminProducts = () => {
           </thead>
           <tbody className="divide-y divide-slate-100">
             {products.map((product) => {
-              // ডিসকাউন্টেড প্রাইস ক্যালকুলেশন
               const finalPrice = product.discount > 0 
                 ? Math.round(product.price - (product.price * product.discount / 100)) 
                 : product.price;

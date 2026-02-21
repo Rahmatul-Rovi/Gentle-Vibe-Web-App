@@ -4,7 +4,6 @@ import axios from "axios";
 import Swal from "sweetalert2";
 
 const AdminProfile = () => {
-  // Local storage theke fresh data load kora
   const getStoredUser = () => JSON.parse(localStorage.getItem("user")) || {};
   
   const [userData, setUserData] = useState(getStoredUser());
@@ -13,7 +12,6 @@ const AdminProfile = () => {
   const [loading, setLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
 
-  // Edit mode on korle current data form-e set kora
   const toggleEdit = () => {
     if (!isEditing) {
       setFormData({
@@ -49,7 +47,7 @@ const AdminProfile = () => {
         finalImageUrl = cloudRes.data.secure_url;
       }
 
-      // 2. Backend Call - Make sure ID exists
+      // 2. Backend Call
       const userId = userData._id || userData.id;
       const res = await axios.patch(`http://localhost:5000/api/admin/profile-update/${userId}`, {
         name: formData.name,

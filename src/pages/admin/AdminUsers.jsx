@@ -10,8 +10,6 @@ const AdminUsers = () => {
   // --- Fetch All Users ---
   const fetchUsers = async () => {
     try {
-      // Tomar backend-e /api/admin/stats e User.countDocuments() chilo
-      // Kintu shob user list-er jonno ekta notun API route backend-e thakte hobe
       const res = await axios.get("http://localhost:5000/api/admin/users"); 
       setUsers(res.data);
       setLoading(false);
@@ -38,7 +36,6 @@ const AdminUsers = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          // Backend-e delete route thakle eita kaj korbe
           await axios.delete(`http://localhost:5000/api/admin/users/${id}`);
           setUsers(users.filter(u => u._id !== id));
           Swal.fire('Removed!', 'User has been deleted.', 'success');
