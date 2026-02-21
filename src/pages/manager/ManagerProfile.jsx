@@ -13,7 +13,7 @@ const ManagerProfile = () => {
     setUser(storedUser);
   }, []);
 
-  // --- ইমেজ আপলোড এবং প্রোফাইল আপডেট লজিক ---
+  // --- Image Upload and proifle Update logic ---
   const handleUpdate = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -24,7 +24,7 @@ const ManagerProfile = () => {
     const confirmPassword = form.confirmPassword.value;
     const imageFile = form.profilePic.files[0];
 
-    // পাসওয়ার্ড ম্যাচিং চেক
+    // Password Matching Check
     if (password && password !== confirmPassword) {
       setLoading(false);
       return Swal.fire("Error", "Passwords do not match!", "error");
@@ -40,7 +40,7 @@ const ManagerProfile = () => {
     try {
       let imageUrl = user.image || "";
 
-      // ১. যদি নতুন ইমেজ সিলেক্ট করা হয়, তবে ক্লাউডিনারিতে আপলোড হবে
+      // If new image upload it will go to cloudinary
       if (imageFile) {
         const formData = new FormData();
         formData.append("file", imageFile);
@@ -53,17 +53,16 @@ const ManagerProfile = () => {
         imageUrl = cloudinaryRes.data.secure_url;
       }
 
-      // ২. ব্যাকেন্ডে ডাটা পাঠানো (আপনার API অনুযায়ী)
+      // Fetch the backend
       const updateData = {
         name,
         image: imageUrl,
-        ...(password && { password }) // পাসওয়ার্ড দিলে তবেই পাঠাবে
+        ...(password && { password }) 
       };
 
       const res = await axios.put(`http://localhost:5000/api/users/update/${user._id}`, updateData);
 
       if (res.data.success) {
-        // লোকাল স্টোরেজ আপডেট করা যাতে রিফ্রেশ করলে নতুন নাম/ছবি থাকে
         const updatedUser = { ...user, ...updateData };
         localStorage.setItem("user", JSON.stringify(updatedUser));
         setUser(updatedUser);
@@ -78,7 +77,6 @@ const ManagerProfile = () => {
     }
   };
 
-  // ইমেজ প্রিভিউ দেখানোর জন্য
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {

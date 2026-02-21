@@ -24,7 +24,7 @@ const ManagerDashboard = () => {
 
       const res = await axios.get("http://localhost:5000/api/admin/orders/recent");
 
-      // ১. শুধুমাত্র POS (Offline) অর্ডারগুলো ফিল্টার করা
+      // ১. POS (Offline) payment
       const offlineOnly = res.data.filter(order => order.isPOS === true);
 
       const today = new Date();
@@ -34,7 +34,7 @@ const ManagerDashboard = () => {
       let todayRev = 0;
 
       const processedOrders = offlineOnly.map(order => {
-        // প্রোডাক্ট ডিসকাউন্ট হওয়ার পর কাস্টমার যে টাকাটা দিয়েছে (totalAmount)
+        // Total payment from the discount product
         const amountPaid = Number(order.totalAmount) || 0; 
         const orderDate = new Date(order.createdAt);
         
