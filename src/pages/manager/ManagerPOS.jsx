@@ -89,7 +89,7 @@ const ManagerPOS = () => {
     setCart(cart.filter((item) => item._id !== id));
   };
 
-  // টোটাল পেএবল (আইটেম ডিসকাউন্ট সহ আসল দাম)
+  // Total Payable amount(with Discount)
   const totalToPay = useMemo(() => {
     return cart.reduce((total, item) => total + item.finalPrice * item.quantity, 0);
   }, [cart]);
@@ -265,12 +265,12 @@ const ManagerPOS = () => {
         </div>
       </div>
 
-      {/* ✅ প্রিন্ট সেকশন */}
+      {/* Print Section */}
       <div style={{ position: "absolute", left: "-9999px", top: 0 }}>
         <div ref={componentRef} className="p-4 text-black bg-white w-[80mm] font-mono">
           <div className="text-center mb-4">
             <h1 className="text-xl font-bold uppercase">ONE POINT PLUS</h1>
-            <p className="text-[10px]">Sector-07, Uttara, Dhaka</p>
+            <p className="text-[10px]">City Centre, Ground Floor Aurangzeb Road, Pabna</p>
             <div className="border-b border-black border-dashed my-2"></div>
             <p className="text-[12px] font-bold">SALES RECEIPT</p>
           </div>
