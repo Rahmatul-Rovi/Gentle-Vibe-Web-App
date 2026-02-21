@@ -6,12 +6,12 @@ import { PlusCircle, Image as ImageIcon, Tag, Hash, DollarSign, Palette, Ruler, 
 const ManagerAddProduct = () => {
   const [loading, setLoading] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
-  const [selectedFile, setSelectedFile] = useState(null); // নতুন স্টেট ইমেজ ফাইল রাখার জন্য
+  const [selectedFile, setSelectedFile] = useState(null); 
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setSelectedFile(file); // ফাইলটি সেভ করে রাখছি
+      setSelectedFile(file); 
       setImagePreview(URL.createObjectURL(file));
     }
   };
@@ -19,7 +19,7 @@ const ManagerAddProduct = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // ফাইল সিলেক্ট করা হয়েছে কি না চেক
+    // If this file check?
     if (!selectedFile) {
       Swal.fire("Error", "Please select an image first!", "error");
       return;
@@ -36,7 +36,7 @@ const ManagerAddProduct = () => {
     });
 
     try {
-      // ১. ক্লাউডিনারি আপলোড (স্টেট থেকে ফাইল নিচ্ছি)
+      // From Cloudinary file
       const formData = new FormData();
       formData.append("file", selectedFile);
       formData.append("upload_preset", "gentle_preset");
@@ -48,7 +48,7 @@ const ManagerAddProduct = () => {
 
       const imageUrl = cloudinaryRes.data.secure_url;
 
-      // ২. ব্যাকেন্ডে ডাটা পাঠানো
+      // Fetch from backend
       const productData = {
         name: form.name.value,
         description: form.description.value,
@@ -71,7 +71,7 @@ const ManagerAddProduct = () => {
         });
         form.reset();
         setImagePreview(null);
-        setSelectedFile(null); // স্টেট ক্লিয়ার
+        setSelectedFile(null); 
       }
     } catch (err) {
       console.error("Error Detail:", err);
