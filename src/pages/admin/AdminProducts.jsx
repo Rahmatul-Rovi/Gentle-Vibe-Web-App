@@ -24,56 +24,63 @@ const AdminProducts = () => {
   }, []);
 
   const handleView = (product) => {
-    const finalPrice = product.discount > 0 
-      ? Math.round(product.price - (product.price * product.discount / 100)) 
-      : product.price;
+    const currentDiscount = product.discount || 0;
+    const discountedPrice = product.price - (product.price * currentDiscount / 100);
 
     Swal.fire({
       title: `<span style="text-transform: uppercase; font-weight: 900;">${product.name}</span>`,
       html: `
         <div style="text-align: left; font-family: sans-serif;">
-          <img src="${product.images[0]}" style="width: 100%; border-radius: 15px; margin-bottom: 15px; border: 1px solid #eee;" />
-          <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-             <span><strong>Category:</strong> ${product.category.toUpperCase()}</span>
-             <span style="color: #e11d48; font-weight: bold;">${product.discount}% OFF</span>
+          <img src="${product.images[0]}" style="width: 100%; border-radius: 15px; margin-bottom: 15px; border: 1px solid #eee; height: 180px; object-fit: contain;" />
+          
+          <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-weight: bold;">
+            <span>MRP: ৳${product.price}</span>
+            <span style="color: #ef4444;">Current Sale: ৳${discountedPrice.toFixed(0)}</span>
           </div>
-          <p><strong>Original Price:</strong> ৳${product.price}</p>
-          <p><strong>Final Sale Price:</strong> ৳${finalPrice}</p>
-          <p style="font-size: 1.2rem; margin-bottom: 10px;">
-            <strong>Current Stock:</strong> 
-            <span class="${product.stock < 5 ? 'text-danger' : 'text-success'}" style="font-weight: bold;">
-              ${product.stock} pcs
-            </span>
-          </p>
-          <hr />
-          <div style="margin-top: 15px; background: #f9f9f9; padding: 10px; border-radius: 10px;">
+
+          <div style="margin-top: 15px; background: #fff1f2; padding: 12px; border-radius: 12px; border: 1px solid #fecdd3;">
+            <label style="font-weight: bold; display: block; color: #be123c; margin-bottom: 5px;">UPDATE DISCOUNT PERCENTAGE (%):</label>
+            <input type="number" id="discount" class="swal2-input" placeholder="e.g. 10" value="${currentDiscount}" style="width: 85%; margin: 5px auto; border-color: #fecdd3;">
+          </div>
+
+          <div style="margin-top: 15px; background: #f9f9f9; padding: 12px; border-radius: 12px;">
             <label style="font-weight: bold; display: block; margin-bottom: 5px;">ADD NEW STOCK (Quantity):</label>
-            <input type="number" id="new-stock" class="swal2-input" placeholder="Enter amount to add" style="width: 80%; margin: 5px auto;">
+            <input type="number" id="new-stock" class="swal2-input" placeholder="Enter amount to add" style="width: 85%; margin: 5px auto;">
           </div>
         </div>
       `,
       showCancelButton: true,
-      confirmButtonText: 'UPDATE STOCK',
-      cancelButtonText: 'CLOSE',
+      confirmButtonText: 'SAVE CHANGES',
       confirmButtonColor: '#000',
+      cancelButtonText: 'CANCEL',
       preConfirm: () => {
-        const addedQuantity = Swal.getPopup().querySelector('#new-stock').value;
-        if (!addedQuantity || addedQuantity <= 0) return null; 
-        return { addedQuantity: parseInt(addedQuantity) };
+        const discount = document.getElementById('discount').value;
+        const addedQuantity = document.getElementById('new-stock').value || 0;
+        
+        return { 
+          discount: parseInt(discount), 
+          addedQuantity: parseInt(addedQuantity) 
+        };
       }
     }).then(async (result) => {
-      if (result.isConfirmed && result.value) {
+      if (result.isConfirmed) {
         try {
-          const updateAmount = -result.value.addedQuantity; 
-          const res = await axios.patch(`http://localhost:5000/api/products/${product._id}/stock`, {
-            quantity: updateAmount
+          // Discount Update
+          await axios.patch(`http://localhost:5000/api/products/${product._id}`, {
+            discount: result.value.discount
           });
-          if (res.data.success) {
-            Swal.fire('Updated!', 'Stock has been increased.', 'success');
-            fetchProducts();
+
+          // Stock Update
+          if (result.value.addedQuantity > 0) {
+            await axios.patch(`http://localhost:5000/api/products/${product._id}/stock`, {
+              quantity: -result.value.addedQuantity //
+            });
           }
+
+          Swal.fire({ icon: 'success', title: 'Changes Saved!', timer: 1500, showConfirmButton: false });
+          fetchProducts();
         } catch (err) {
-          Swal.fire('Error!', 'Failed to update stock.', 'error');
+          Swal.fire('Error!', 'Update failed.', 'error');
         }
       }
     });
@@ -164,7 +171,6 @@ const AdminProducts = () => {
                     </span>
                   </td>
                   
-                  {/* --- Price & Discount Section --- */}
                   <td className="px-6 py-5">
                     <div className="flex flex-col">
                       <span className="font-black text-slate-900 italic text-lg">৳{finalPrice}</span>
@@ -192,10 +198,9 @@ const AdminProducts = () => {
                       <button 
                         onClick={() => handleView(product)}
                         className="p-3 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm flex items-center gap-1"
-                        title="View & Update Stock"
                       >
-                        <Eye size={18} />
-                        <span className="text-[10px] font-bold">STOCK</span>
+                        <Edit size={18} />
+                        <span className="text-[10px] font-bold uppercase">Manage</span>
                       </button>
                       <button 
                         onClick={() => handleDelete(product._id)}
