@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import Swal from 'sweetalert2'; // Import SweetAlert2
+import Swal from 'sweetalert2'; 
 
 const AddProduct = () => {
     const [loading, setLoading] = useState(false);
@@ -49,12 +49,12 @@ const AddProduct = () => {
             const res = await axios.post('http://localhost:5000/api/products/add', productData);
             
             if(res.data.success) {
-                // Success Alert 🚀
+                // Success Alert
                 Swal.fire({
                     icon: 'success',
                     title: 'Published!',
                     text: 'Product added to ONE POINT PLUS collection.',
-                    confirmButtonColor: '#000', // Black button to match your theme
+                    confirmButtonColor: '#000', 
                     background: '#fff',
                 });
                 form.reset();
@@ -62,7 +62,7 @@ const AddProduct = () => {
         } catch (err) {
             console.error("Error Detail:", err.response?.data || err);
             
-            // Error Alert ❌
+            // Error Alert
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
