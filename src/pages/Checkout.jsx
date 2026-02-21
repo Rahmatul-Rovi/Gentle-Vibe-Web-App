@@ -10,7 +10,7 @@ const Checkout = () => {
     const [loading, setLoading] = useState(false); 
     const [address, setAddress] = useState({ name: '', phone: '', city: '', address: '' });
 
-    // ১. ডিসকাউন্ট সহ সাবটোটাল ক্যালকুলেশন (Cart Page এর সাথে মিল রেখে)
+    // Subtotal Calculation with discount
     const subtotal = cart.reduce((total, item) => {
         const hasDiscount = item.discount && item.discount > 0;
         const currentPrice = hasDiscount 
@@ -33,7 +33,7 @@ const Checkout = () => {
             return;
         }
 
-        // ২. অর্ডার ডেটাতে ডিসকাউন্টেড প্রাইস ম্যাপ করে পাঠানো
+        // Price map on the order data
         const orderData = {
             cart: cart.map(item => {
                 const hasDiscount = item.discount && item.discount > 0;
@@ -42,7 +42,7 @@ const Checkout = () => {
                     : item.price;
                 return {
                     ...item,
-                    price: finalUnitPrice // ব্যাকএন্ডে ডিসকাউন্টেড প্রাইস পাঠাচ্ছি
+                    price: finalUnitPrice 
                 };
             }),
             address: address,

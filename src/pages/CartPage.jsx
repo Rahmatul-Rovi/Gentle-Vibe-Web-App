@@ -8,7 +8,7 @@ const CartPage = () => {
 
     const isStockExceeded = cart.some(item => item.quantity > item.stock);
 
-    // ১. ডিসকাউন্ট সহ সাবটোটাল ক্যালকুলেশন
+    // Subtotal Calculation with discount
     const subtotal = cart.reduce((total, item) => {
         const hasDiscount = item.discount && item.discount > 0;
         const currentPrice = hasDiscount 
@@ -53,7 +53,7 @@ const CartPage = () => {
                 {/* --- LEFT: ITEM LIST --- */}
                 <div className="lg:col-span-2 space-y-10">
                     {cart.map((item) => {
-                        // আইটেম লেভেলে ডিসকাউন্ট চেক
+                        // Discount Check form Item level
                         const hasDiscount = item.discount && item.discount > 0;
                         const itemUnitPrice = hasDiscount 
                             ? Math.round(item.price - (item.price * item.discount / 100)) 

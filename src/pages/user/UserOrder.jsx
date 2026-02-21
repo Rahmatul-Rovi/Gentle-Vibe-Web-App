@@ -5,7 +5,7 @@ import { Eye, Package, Loader2, X } from "lucide-react";
 const UserOrder = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedOrder, setSelectedOrder] = useState(null); // State for Modal
+  const [selectedOrder, setSelectedOrder] = useState(null); 
 
   useEffect(() => {
     const fetchOrders = async () => {
