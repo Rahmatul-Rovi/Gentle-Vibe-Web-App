@@ -10,7 +10,7 @@ const AuthProvider = ({ children }) => {
 
     const logOut = () => {
         setLoading(true);
-        localStorage.removeItem('user'); // Local storage clean kora bhalo
+        localStorage.removeItem('user'); 
         localStorage.removeItem('token');
         return signOut(auth);
     }
@@ -18,7 +18,6 @@ const AuthProvider = ({ children }) => {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             if (currentUser) {
-                // Jodi Firebase-e user thake, check koro LocalStorage-e MongoDB data ache ki na
                 const storedUser = JSON.parse(localStorage.getItem('user'));
                 if (storedUser) {
                     setUser(storedUser);

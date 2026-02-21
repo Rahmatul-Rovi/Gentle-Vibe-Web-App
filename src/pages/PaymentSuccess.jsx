@@ -6,10 +6,9 @@ import { useCart } from '../context/CartContext';
 
 const PaymentSuccess = () => {
     const { tranId } = useParams();
-    const { clearCart } = useCart(); // Direct clearCart function-ta nilam
+    const { clearCart } = useCart(); 
 
     useEffect(() => {
-        // Page load hobar sathe sathe cart faka korbe
         clearCart(); 
 
         // Confetti celebration
@@ -32,7 +31,7 @@ const PaymentSuccess = () => {
         }, 250);
 
         return () => clearInterval(interval);
-    }, []); // dependency array empty rakhlam jate bar bar run na hoy
+    }, []); 
 
     return (
         <div className="h-screen flex flex-col items-center justify-center space-y-8 bg-white px-4">
