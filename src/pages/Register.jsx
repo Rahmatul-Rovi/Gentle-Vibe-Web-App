@@ -36,7 +36,7 @@ const Register = () => {
             localStorage.setItem('token', res.data.token);
             localStorage.setItem('user', JSON.stringify(res.data.user));
 
-            // Registration-er por role onujayi redirection
+            // After registration role based redirect
             if (res.data.user.role === 'admin') {
                 navigate('/admin');
             } else {
@@ -57,15 +57,15 @@ const Register = () => {
                 <form className="space-y-5" onSubmit={handleRegister}>
                     <div className="space-y-1">
                         <label className="text-[10px] font-black uppercase tracking-widest text-gray-400">Full Name</label>
-                        <input type="text" placeholder="GENTLE USER" className="input input-bordered rounded-none w-full focus:outline-black text-sm bg-white text-black font-bold" onChange={(e) => setName(e.target.value)} required />
+                        <input type="text" placeholder="Enter Your Name" className="input input-bordered rounded-none w-full focus:outline-black text-sm bg-white text-black font-bold" onChange={(e) => setName(e.target.value)} required />
                     </div>
                     <div className="space-y-1">
                         <label className="text-[10px] font-black uppercase tracking-widest text-gray-400">Email Address</label>
-                        <input type="email" placeholder="YOUR@EMAIL.COM" className="input input-bordered rounded-none w-full focus:outline-black text-sm bg-white text-black font-bold" onChange={(e) => setEmail(e.target.value)} required />
+                        <input type="email" placeholder="Enter Your Email" className="input input-bordered rounded-none w-full focus:outline-black text-sm bg-white text-black font-bold" onChange={(e) => setEmail(e.target.value)} required />
                     </div>
                     <div className="space-y-1">
                         <label className="text-[10px] font-black uppercase tracking-widest text-gray-400">Password</label>
-                        <input type="password" placeholder="••••••••" className="input input-bordered rounded-none w-full focus:outline-black text-sm bg-white text-black font-bold" onChange={(e) => setPassword(e.target.value)} required />
+                        <input type="password" placeholder="Enter Your Password" className="input input-bordered rounded-none w-full focus:outline-black text-sm bg-white text-black font-bold" onChange={(e) => setPassword(e.target.value)} required />
                     </div>
                     <button type="submit" className="btn btn-block bg-black text-white hover:bg-gray-800 rounded-none border-none uppercase tracking-[0.2em] text-xs h-14 mt-4">Create Account</button>
                 </form>
