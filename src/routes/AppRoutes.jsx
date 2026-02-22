@@ -3,7 +3,7 @@ import { createBrowserRouter } from "react-router-dom";
 // Layouts
 import MainLayout from "../layouts/MainLayout";
 import AdminLayout from "../layouts/AdminLayout";
-import ManagerLayout from "../layouts/ManagerLayout"; // ইম্পোর্ট নিশ্চিত করুন
+import ManagerLayout from "../layouts/ManagerLayout"; 
 import UserLayout from "../layouts/UserLayout";
 
 // Pages
@@ -27,14 +27,14 @@ import AdminUsers from "../pages/admin/AdminUsers";
 import MakeAdmin from "../pages/admin/MakeAdmin";
 import AdminProfile from "../pages/admin/AdminProfile";
 import AdminReviews from "../pages/admin/AdminReviews.jsx";
-import POS from "../pages/admin/Pos.jsx"; // অ্যাডমিনের POS
+import POS from "../pages/admin/Pos.jsx";
 
 // Manager Pages
 import ManagerDashboard from "../pages/manager/ManagerDashboard";
 import ManagerAddProduct from "../pages/manager/ManagerAddProduct";
 import ManagerProducts from "../pages/manager/ManagerProducts";
 import ManagerOrders from "../pages/manager/ManagerOrders";
-import ManagerPOS from "../pages/manager/ManagerPOS"; // ম্যানেজারের POS
+import ManagerPOS from "../pages/manager/ManagerPOS";
 import ManagerProfile from "../pages/manager/ManagerProfile";
 
 // User Pages
@@ -46,7 +46,7 @@ import MyReview from "../pages/user/MyReview.jsx";
 // Route Protectors
 import UserRoute from "../routes/UserRoute"; 
 import AdminRoute from "../routes/AdminRoute";
-import ManagerRoute from "../routes/ManagerRoute"; // ইম্পোর্ট নিশ্চিত করুন
+import ManagerRoute from "../routes/ManagerRoute";
 
 const router = createBrowserRouter([
   {
