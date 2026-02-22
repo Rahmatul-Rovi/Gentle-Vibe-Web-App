@@ -3,12 +3,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../providers/AuthProvider';
 import { auth, googleProvider } from '../firebase/firebase.config';
 import { signInWithPopup, signInWithEmailAndPassword } from 'firebase/auth'; 
+import { Eye, EyeOff } from 'lucide-react'; 
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false); 
     const navigate = useNavigate();
     const { setUser } = useContext(AuthContext); 
 
@@ -16,17 +18,13 @@ const Login = () => {
         e.preventDefault();
         try {
             await signInWithEmailAndPassword(auth, email, password);
-
             const res = await axios.post('http://localhost:5000/api/login', { email, password });
             
             const userData = res.data.user;
-            
             localStorage.setItem('token', res.data.token);
             localStorage.setItem('user', JSON.stringify(userData));
-
             setUser(userData);
 
-            // ---Update Redirect Logic ---
             if (userData.role === 'admin') {
                 navigate('/admin'); 
             } else if (userData.role === 'manager') {
@@ -67,10 +65,8 @@ const Login = () => {
             const userData = res.data.user;
             localStorage.setItem('token', res.data.token);
             localStorage.setItem('user', JSON.stringify(userData));
-            
             setUser(userData); 
 
-            // ---Update Redirect Logic to Google  ---
             if (userData.role === 'admin') {
                 navigate('/admin');
             } else if (userData.role === 'manager') {
@@ -101,16 +97,28 @@ const Login = () => {
                             required 
                         />
                     </div>
-                    <div className="space-y-1">
+
+                    {/* Password Field with Eye Icon */}
+                    <div className="space-y-1 relative">
                         <label className="text-[10px] font-black uppercase tracking-widest text-gray-400">Password</label>
-                        <input 
-                            type="password" 
-                            placeholder="Enter Your Password" 
-                            className="input input-bordered rounded-none w-full focus:outline-black bg-white text-black font-bold" 
-                            onChange={(e) => setPassword(e.target.value)} 
-                            required 
-                        />
+                        <div className="relative">
+                            <input 
+                                type={showPassword ? "text" : "password"} 
+                                placeholder="Enter Your Password" 
+                                className="input input-bordered rounded-none w-full focus:outline-black bg-white text-black font-bold pr-12" 
+                                onChange={(e) => setPassword(e.target.value)} 
+                                required 
+                            />
+                            <button 
+                                type="button" 
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black transition-colors"
+                            >
+                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                            </button>
+                        </div>
                     </div>
+
                     <button type="submit" className="btn btn-block bg-black text-white hover:bg-gray-800 rounded-none border-none uppercase tracking-[0.2em] text-xs h-14">
                         Sign In
                     </button>
