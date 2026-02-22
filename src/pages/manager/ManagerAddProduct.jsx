@@ -102,7 +102,7 @@ const ManagerAddProduct = () => {
             <label className="text-xs font-black uppercase text-slate-400 ml-1">Product Name</label>
             <div className="relative">
               <Tag className="absolute left-4 top-3.5 text-slate-400" size={18} />
-              <input required name="name" className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 ring-black font-bold text-black" placeholder="Premium T-Shirt" />
+              <input required name="name" className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 ring-black font-bold text-black" placeholder="Product Name" />
             </div>
           </div>
 
@@ -111,7 +111,7 @@ const ManagerAddProduct = () => {
             <label className="text-xs font-black uppercase text-slate-400 ml-1">Price (BDT)</label>
             <div className="relative">
               <DollarSign className="absolute left-4 top-3.5 text-slate-400" size={18} />
-              <input required type="number" name="price" className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 ring-black font-bold text-black" placeholder="1200" />
+              <input required type="number" name="price" className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 ring-black font-bold text-black" placeholder="Enter Price" />
             </div>
           </div>
 
@@ -130,7 +130,7 @@ const ManagerAddProduct = () => {
             <label className="text-xs font-black uppercase text-slate-400 ml-1">Stock Quantity</label>
             <div className="relative">
               <Hash className="absolute left-4 top-3.5 text-slate-400" size={18} />
-              <input required type="number" name="stock" className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 ring-black font-bold text-black" placeholder="50" />
+              <input required type="number" name="stock" className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 ring-black font-bold text-black" placeholder="Enter Stock Quantity" />
             </div>
           </div>
 
@@ -148,7 +148,7 @@ const ManagerAddProduct = () => {
             <label className="text-xs font-black uppercase text-slate-400 ml-1">Colors</label>
             <div className="relative">
               <Palette className="absolute left-4 top-3.5 text-slate-400" size={18} />
-              <input name="colors" className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 ring-black font-bold text-black" placeholder="Black, White, Navy" />
+              <input name="colors" className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 ring-black font-bold text-black" placeholder="Enter Product Color" />
             </div>
           </div>
         </div>
