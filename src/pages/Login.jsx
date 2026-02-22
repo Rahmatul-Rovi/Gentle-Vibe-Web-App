@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../providers/AuthProvider';
 import { auth, googleProvider } from '../firebase/firebase.config';
@@ -11,42 +11,60 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false); 
+    const [rememberMe, setRememberMe] = useState(false); 
     const navigate = useNavigate();
     const { setUser } = useContext(AuthContext); 
+
+    useEffect(() => {
+        const savedEmail = localStorage.getItem('rememberedEmail');
+        const savedPassword = localStorage.getItem('rememberedPassword');
+        if (savedEmail && savedPassword) {
+            setEmail(savedEmail);
+            setPassword(savedPassword);
+            setRememberMe(true);
+        }
+    }, []);
+
+    // Redirect Logic
+    const handleRedirect = (userData) => {
+        if (userData.role === 'admin') {
+            navigate('/admin'); 
+        } else if (userData.role === 'manager') {
+            navigate('/manager/dashboard'); 
+        } else {
+            navigate('/user/profile'); 
+        }
+    };
 
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
+            // Firebase Login
             await signInWithEmailAndPassword(auth, email, password);
-            const res = await axios.post('http://localhost:5000/api/login', { email, password });
             
+            // Backend Login
+            const res = await axios.post('http://localhost:5000/api/login', { email, password });
             const userData = res.data.user;
+
             localStorage.setItem('token', res.data.token);
             localStorage.setItem('user', JSON.stringify(userData));
-            setUser(userData);
 
-            if (userData.role === 'admin') {
-                navigate('/admin'); 
-            } else if (userData.role === 'manager') {
-                navigate('/manager/dashboard'); 
+            // Remember Me login password save
+            if (rememberMe) {
+                localStorage.setItem('rememberedEmail', email);
+                localStorage.setItem('rememberedPassword', password);
             } else {
-                navigate('/user/profile'); 
+                localStorage.removeItem('rememberedEmail');
+                localStorage.removeItem('rememberedPassword');
             }
 
-            Swal.fire({
-                icon: 'success',
-                title: 'Welcome Back!',
-                text: `Logged in as ${userData.name}`,
-                timer: 2000,
-                showConfirmButton: false
-            });
+            setUser(userData);
+            handleRedirect(userData);
+
+            Swal.fire({ icon: 'success', title: 'Welcome Back!', text: `Logged in as ${userData.name}`, timer: 2000, showConfirmButton: false });
             
         } catch (err) {
-            Swal.fire({ 
-                icon: 'error', 
-                title: 'Login Failed', 
-                text: err.response?.data?.message || "Check your email/password and try again." 
-            });
+            Swal.fire({ icon: 'error', title: 'Login Failed', text: err.response?.data?.message || "Check your credentials." });
         }
     };
 
@@ -55,6 +73,7 @@ const Login = () => {
             const result = await signInWithPopup(auth, googleProvider);
             const loggedUser = result.user;
 
+            // Check Google Login Registration
             const res = await axios.post('http://localhost:5000/api/register', {
                 name: loggedUser.displayName,
                 email: loggedUser.email,
@@ -65,15 +84,12 @@ const Login = () => {
             const userData = res.data.user;
             localStorage.setItem('token', res.data.token);
             localStorage.setItem('user', JSON.stringify(userData));
+            
             setUser(userData); 
+            handleRedirect(userData);
 
-            if (userData.role === 'admin') {
-                navigate('/admin');
-            } else if (userData.role === 'manager') {
-                navigate('/manager/dashboard'); 
-            } else {
-                navigate('/user/profile');
-            }
+            Swal.fire({ icon: 'success', title: 'Google Login Success!', timer: 1500, showConfirmButton: false });
+
         } catch (error) {
             console.error(error);
             Swal.fire({ icon: 'error', title: 'Google Login Error' });
@@ -90,7 +106,9 @@ const Login = () => {
                     <div className="space-y-1">
                         <label className="text-[10px] font-black uppercase tracking-widest text-gray-400">Email Address</label>
                         <input 
+                            name="email"
                             type="email" 
+                            value={email}
                             placeholder="Enter Your Email" 
                             className="input input-bordered rounded-none w-full focus:outline-black bg-white text-black font-bold" 
                             onChange={(e) => setEmail(e.target.value)} 
@@ -98,12 +116,13 @@ const Login = () => {
                         />
                     </div>
 
-                    {/* Password Field with Eye Icon */}
                     <div className="space-y-1 relative">
                         <label className="text-[10px] font-black uppercase tracking-widest text-gray-400">Password</label>
                         <div className="relative">
                             <input 
+                                name="password"
                                 type={showPassword ? "text" : "password"} 
+                                value={password}
                                 placeholder="Enter Your Password" 
                                 className="input input-bordered rounded-none w-full focus:outline-black bg-white text-black font-bold pr-12" 
                                 onChange={(e) => setPassword(e.target.value)} 
@@ -117,6 +136,19 @@ const Login = () => {
                                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                             </button>
                         </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                        <input 
+                            type="checkbox" 
+                            id="remember"
+                            className="checkbox checkbox-xs rounded-none border-black" 
+                            checked={rememberMe}
+                            onChange={(e) => setRememberMe(e.target.checked)}
+                        />
+                        <label htmlFor="remember" className="text-[10px] font-bold uppercase tracking-widest text-gray-500 cursor-pointer">
+                            Remember Me
+                        </label>
                     </div>
 
                     <button type="submit" className="btn btn-block bg-black text-white hover:bg-gray-800 rounded-none border-none uppercase tracking-[0.2em] text-xs h-14">
@@ -133,9 +165,7 @@ const Login = () => {
 
                 <div className="mt-10 text-center">
                     <span className="text-gray-400 text-[10px] font-bold uppercase tracking-widest">New here? </span>
-                    <Link to="/register" className="text-[10px] font-black border-b-2 border-black pb-1 hover:text-gray-500 uppercase text-black tracking-widest ml-1">
-                        Create Account
-                    </Link>
+                    <Link to="/register" className="text-[10px] font-black border-b-2 border-black pb-1 hover:text-gray-500 uppercase text-black tracking-widest ml-1">Create Account</Link>
                 </div>
             </div>
         </div>
