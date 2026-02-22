@@ -3,11 +3,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { auth, googleProvider } from '../firebase/firebase.config';
 import { signInWithPopup } from 'firebase/auth';
+import { Eye, EyeOff } from 'lucide-react';
 
 const Register = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false); 
     const navigate = useNavigate();
 
     const handleRegister = async (e) => {
@@ -36,7 +38,6 @@ const Register = () => {
             localStorage.setItem('token', res.data.token);
             localStorage.setItem('user', JSON.stringify(res.data.user));
 
-            // After registration role based redirect
             if (res.data.user.role === 'admin') {
                 navigate('/admin');
             } else {
@@ -63,16 +64,34 @@ const Register = () => {
                         <label className="text-[10px] font-black uppercase tracking-widest text-gray-400">Email Address</label>
                         <input type="email" placeholder="Enter Your Email" className="input input-bordered rounded-none w-full focus:outline-black text-sm bg-white text-black font-bold" onChange={(e) => setEmail(e.target.value)} required />
                     </div>
-                    <div className="space-y-1">
+                    
+                    {/* Password Field with Eye Icon */}
+                    <div className="space-y-1 relative">
                         <label className="text-[10px] font-black uppercase tracking-widest text-gray-400">Password</label>
-                        <input type="password" placeholder="Enter Your Password" className="input input-bordered rounded-none w-full focus:outline-black text-sm bg-white text-black font-bold" onChange={(e) => setPassword(e.target.value)} required />
+                        <div className="relative">
+                            <input 
+                                type={showPassword ? "text" : "password"} 
+                                placeholder="Enter Your Password" 
+                                className="input input-bordered rounded-none w-full focus:outline-black text-sm bg-white text-black font-bold pr-12" 
+                                onChange={(e) => setPassword(e.target.value)} 
+                                required 
+                            />
+                            <button 
+                                type="button" 
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition-colors"
+                            >
+                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                            </button>
+                        </div>
                     </div>
+
                     <button type="submit" className="btn btn-block bg-black text-white hover:bg-gray-800 rounded-none border-none uppercase tracking-[0.2em] text-xs h-14 mt-4">Create Account</button>
                 </form>
 
                 <div className="divider text-[10px] text-gray-400 uppercase py-6">OR</div>
 
-                <button onClick={handleGoogleRegister} type="button" className="btn btn-block btn-outline rounded-none border-gray-200 hover:bg-black hover:text-white gap-3 font-bold text-[10px] tracking-widest h-14 transition-all">
+                <button onClick={handleGoogleRegister} type="button" className="btn btn-block btn-outline rounded-none border-gray-200 hover:bg-black hover:text-white gap-3 font-bold text-[10px] tracking-widest h-14 transition-all text-black">
                     <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" className="w-4" alt="G" />
                     CONTINUE WITH GOOGLE
                 </button>
