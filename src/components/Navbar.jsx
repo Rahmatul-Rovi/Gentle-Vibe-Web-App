@@ -42,7 +42,7 @@ const Navbar = () => {
               </ul>
             </div>
             <Link to="/" className="text-2xl font-black tracking-tighter cursor-pointer">
-              ONE POINT PLUS
+              GENTLE-VIBE
             </Link>
           </div>
 

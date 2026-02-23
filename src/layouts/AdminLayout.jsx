@@ -25,7 +25,7 @@ const AdminLayout = () => {
       <div className="w-64 bg-black text-white p-6 sticky top-0 h-screen">
         <div className="mb-10">
           <h2 className="text-xl font-black tracking-tighter italic">
-            ONE POINT PLUS
+            GENTLE-VIBE
           </h2>
           <p className="text-[10px] text-gray-500 tracking-[0.2em] uppercase">
             Admin Panel

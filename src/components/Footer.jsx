@@ -10,7 +10,7 @@ const Footer = () => {
           
           {/* Brand Identity */}
           <div className="space-y-6">
-            <h2 className="text-3xl font-black italic tracking-tighter uppercase">ONE POINT PLUS</h2>
+            <h2 className="text-3xl font-black italic tracking-tighter uppercase">GENTLE-VIBE</h2>
             <p className="text-gray-400 text-sm leading-relaxed uppercase tracking-wider">
               Elevating streetwear through minimalism and quality craftsmanship. Designed for those who move in silence.
             </p>
@@ -49,15 +49,15 @@ const Footer = () => {
             <ul className="space-y-4 text-sm text-gray-400">
               <li className="flex items-center gap-3">
                 <MapPin size={18} className="text-white" />
-                <span>City Centre, Ground Floor Aurangzeb Road, Pabna</span>
+                <span>City Center, Mirpur 2, Dhaka</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone size={18} className="text-white" />
-                <span>01719456261</span>
+                <span>01784635447</span>
               </li>
               <li className="flex items-center gap-3">
                 <Mail size={18} className="text-white" />
-                <span>support@onepointplus.com</span>
+                <span>support@gentlevibe.com</span>
               </li>
             </ul>
           </div>
@@ -66,7 +66,7 @@ const Footer = () => {
 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-black uppercase tracking-[0.3em] text-gray-500">
-          <p>© 2026 ONE POINT PLUS. ALL RIGHTS RESERVED.</p>
+          <p>© 2026 GENTLE-VIBE. ALL RIGHTS RESERVED.</p>
           <div className="flex gap-6">
             <span>Privacy Policy</span>
             <span>Terms of Service</span>

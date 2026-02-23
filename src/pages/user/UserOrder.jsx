@@ -238,7 +238,7 @@ const UserOrder = () => {
             {/* Modal Footer */}
             <div className="p-6 bg-gray-50 text-center">
               <p className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">
-                Thank you for choosing ONE POINT PLUS
+                Thank you for choosing GENTLE-VIBE
               </p>
             </div>
           </div>

@@ -269,8 +269,8 @@ const ManagerPOS = () => {
       <div style={{ position: "absolute", left: "-9999px", top: 0 }}>
         <div ref={componentRef} className="p-4 text-black bg-white w-[80mm] font-mono">
           <div className="text-center mb-4">
-            <h1 className="text-xl font-bold uppercase">ONE POINT PLUS</h1>
-            <p className="text-[10px]">City Centre, Ground Floor Aurangzeb Road, Pabna</p>
+            <h1 className="text-xl font-bold uppercase">GENTLE-VIBE</h1>
+            <p className="text-[10px]">City Center, Mirpur 2, Dhaka</p>
             <div className="border-b border-black border-dashed my-2"></div>
             <p className="text-[12px] font-bold">SALES RECEIPT</p>
           </div>
@@ -303,7 +303,7 @@ const ManagerPOS = () => {
 
           <div className="mt-6 text-center pt-4 border-t border-black border-dashed">
             <p className="text-[11px] font-bold uppercase">Thank You!</p>
-            <p className="text-[9px] mt-1 italic">Software by: OnePointPlus</p>
+            <p className="text-[9px] mt-1 italic">Software by: GENTLE-VIBE</p>
           </div>
         </div>
       </div>
