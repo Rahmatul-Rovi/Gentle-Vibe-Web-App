@@ -10,7 +10,7 @@ const ManagerProducts = () => {
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/products");
+      const res = await axios.get("https://gentle-vibe-server.vercel.app/api/products");
       setProducts(res.data);
       setLoading(false);
     } catch (err) {
@@ -63,12 +63,12 @@ const ManagerProducts = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.patch(`http://localhost:5000/api/products/${product._id}`, {
+          await axios.patch(`https://gentle-vibe-server.vercel.app/api/products/${product._id}`, {
             discount: result.value.discount
           });
 
           if (result.value.addedQuantity !== 0) {
-            await axios.patch(`http://localhost:5000/api/products/${product._id}/stock`, {
+            await axios.patch(`https://gentle-vibe-server.vercel.app/api/products/${product._id}/stock`, {
               quantity: -result.value.addedQuantity 
             });
           }
@@ -93,7 +93,7 @@ const ManagerProducts = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.delete(`http://localhost:5000/api/products/${id}`);
+          await axios.delete(`https://gentle-vibe-server.vercel.app/api/products/${id}`);
           setProducts(products.filter((p) => p._id !== id));
           Swal.fire("Deleted!", "Success", "success");
         } catch (err) {

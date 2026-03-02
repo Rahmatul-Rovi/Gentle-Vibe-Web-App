@@ -20,7 +20,7 @@ const UserProfile = () => {
             const storedUser = JSON.parse(localStorage.getItem('user'));
             if (!storedUser || !storedUser.email) return;
 
-            const res = await axios.get(`http://localhost:5000/api/user/profile/${storedUser.email}`);
+            const res = await axios.get(`https://gentle-vibe-server.vercel.app/api/user/profile/${storedUser.email}`);
             setUserData(res.data);
             setFormData({
                 name: res.data.name || '',
@@ -63,7 +63,7 @@ const UserProfile = () => {
         setBtnLoading(true);
         try {
             const storedUser = JSON.parse(localStorage.getItem('user'));
-            const res = await axios.put(`http://localhost:5000/api/user/profile-update/${storedUser.email}`, formData);
+            const res = await axios.put(`https://gentle-vibe-server.vercel.app/api/user/profile-update/${storedUser.email}`, formData);
             
             setUserData(res.data);
             setIsEditing(false);

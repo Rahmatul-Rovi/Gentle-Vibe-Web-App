@@ -60,7 +60,7 @@ const ManagerProfile = () => {
         ...(password && { password }) 
       };
 
-      const res = await axios.put(`http://localhost:5000/api/users/update/${user._id}`, updateData);
+      const res = await axios.put(`https://gentle-vibe-server.vercel.app/api/users/update/${user._id}`, updateData);
 
       if (res.data.success) {
         const updatedUser = { ...user, ...updateData };

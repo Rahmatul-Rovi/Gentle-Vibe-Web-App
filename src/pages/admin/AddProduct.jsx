@@ -46,7 +46,7 @@ const AddProduct = () => {
                 images: [imageUrl]
             };
 
-            const res = await axios.post('http://localhost:5000/api/products/add', productData);
+            const res = await axios.post('https://gentle-vibe-server.vercel.app/api/products/add', productData);
             
             if(res.data.success) {
                 // Success Alert

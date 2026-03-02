@@ -10,7 +10,7 @@ const AdminUsers = () => {
   // --- Fetch All Users ---
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/admin/users"); 
+      const res = await axios.get("https://gentle-vibe-server.vercel.app/api/admin/users"); 
       setUsers(res.data);
       setLoading(false);
     } catch (err) {
@@ -36,7 +36,7 @@ const AdminUsers = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.delete(`http://localhost:5000/api/admin/users/${id}`);
+          await axios.delete(`https://gentle-vibe-server.vercel.app/api/admin/users/${id}`);
           setUsers(users.filter(u => u._id !== id));
           Swal.fire('Removed!', 'User has been deleted.', 'success');
         } catch (err) {

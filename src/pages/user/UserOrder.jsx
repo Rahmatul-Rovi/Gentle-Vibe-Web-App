@@ -19,7 +19,7 @@ const UserOrder = () => {
         }
 
         const res = await axios.get(
-          `http://localhost:5000/api/user/my-orders/${userId}`,
+          `https://gentle-vibe-server.vercel.app/api/user/my-orders/${userId}`,
         );
         setOrders(res.data);
       } catch (err) {

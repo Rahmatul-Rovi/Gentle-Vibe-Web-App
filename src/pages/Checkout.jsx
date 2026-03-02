@@ -51,7 +51,7 @@ const Checkout = () => {
         };
 
         try {
-            const res = await axios.post('http://localhost:5000/api/order/init', orderData);
+            const res = await axios.post('https://gentle-vibe-server.vercel.app/api/order/init', orderData);
             if (res.data?.url) {
                 window.location.replace(res.data.url);
             }

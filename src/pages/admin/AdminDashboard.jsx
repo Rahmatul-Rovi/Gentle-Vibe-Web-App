@@ -11,8 +11,8 @@ const AdminDashboard = () => {
     const fetchData = async () => {
       try {
         const [statsRes, chartRes] = await Promise.all([
-          axios.get("http://localhost:5000/api/admin/stats"),
-          axios.get("http://localhost:5000/api/admin/sales-report")
+          axios.get("https://gentle-vibe-server.vercel.app/api/admin/stats"),
+          axios.get("https://gentle-vibe-server.vercel.app/api/admin/sales-report")
         ]);
         setStats(statsRes.data);
         setChartData(chartRes.data);

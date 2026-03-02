@@ -30,7 +30,7 @@ const MyReview = () => {
     };
 
     try {
-      await axios.post('http://localhost:5000/api/reviews', reviewData);
+      await axios.post('https://gentle-vibe-server.vercel.app/api/reviews', reviewData);
 
       Swal.fire({
         icon: 'success',

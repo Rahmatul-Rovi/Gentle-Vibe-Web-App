@@ -10,7 +10,7 @@ const AdminProducts = () => {
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/products");
+      const res = await axios.get("https://gentle-vibe-server.vercel.app/api/products");
       setProducts(res.data);
       setLoading(false);
     } catch (err) {
@@ -66,13 +66,13 @@ const AdminProducts = () => {
       if (result.isConfirmed) {
         try {
           // Discount Update
-          await axios.patch(`http://localhost:5000/api/products/${product._id}`, {
+          await axios.patch(`https://gentle-vibe-server.vercel.app/api/products/${product._id}`, {
             discount: result.value.discount
           });
 
           // Stock Update
           if (result.value.addedQuantity > 0) {
-            await axios.patch(`http://localhost:5000/api/products/${product._id}/stock`, {
+            await axios.patch(`https://gentle-vibe-server.vercel.app/api/products/${product._id}/stock`, {
               quantity: -result.value.addedQuantity //
             });
           }
@@ -98,7 +98,7 @@ const AdminProducts = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const res = await axios.delete(`http://localhost:5000/api/products/${id}`);
+          const res = await axios.delete(`https://gentle-vibe-server.vercel.app/api/products/${id}`);
           if (res.data.success) {
             setProducts(products.filter((p) => p._id !== id));
             Swal.fire('Deleted!', 'Product has been removed.', 'success');

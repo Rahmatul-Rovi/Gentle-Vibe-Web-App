@@ -10,7 +10,7 @@ const ManagerOrders = () => {
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/admin/orders");
+      const res = await axios.get("https://gentle-vibe-server.vercel.app/api/admin/orders");
       setOrders(res.data);
       setLoading(false);
     } catch (err) {
@@ -25,7 +25,7 @@ const ManagerOrders = () => {
 
   const updateStatus = async (id, newStatus) => {
     try {
-      const res = await axios.put(`http://localhost:5000/api/admin/orders/${id}`, { status: newStatus });
+      const res = await axios.put(`https://gentle-vibe-server.vercel.app/api/admin/orders/${id}`, { status: newStatus });
       if (res.data.success) {
         Swal.fire("Updated!", `Order status is now ${newStatus}`, "success");
         fetchOrders(); 

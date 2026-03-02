@@ -49,7 +49,7 @@ const AdminProfile = () => {
 
       // 2. Backend Call
       const userId = userData._id || userData.id;
-      const res = await axios.patch(`http://localhost:5000/api/admin/profile-update/${userId}`, {
+      const res = await axios.patch(`https://gentle-vibe-server.vercel.app/api/admin/profile-update/${userId}`, {
         name: formData.name,
         photoURL: finalImageUrl
       });

@@ -17,7 +17,7 @@ const ProductDetails = () => {
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const res = await axios.get(`http://localhost:5000/api/products/${id}`);
+                const res = await axios.get(`https://gentle-vibe-server.vercel.app/api/products/${id}`);
                 setProduct(res.data);
                 
                 // Initial settings

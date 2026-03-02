@@ -15,7 +15,7 @@ const Register = () => {
     const handleRegister = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post('http://localhost:5000/api/register', { name, email, password });
+            const res = await axios.post('https://gentle-vibe-server.vercel.app/api/register', { name, email, password });
             alert("Registration Successful! Please Login.");
             navigate('/login');
         } catch (err) {
@@ -28,7 +28,7 @@ const Register = () => {
             const result = await signInWithPopup(auth, googleProvider);
             const loggedUser = result.user;
 
-            const res = await axios.post('http://localhost:5000/api/register', {
+            const res = await axios.post('https://gentle-vibe-server.vercel.app/api/register', {
                 name: loggedUser.displayName,
                 email: loggedUser.email,
                 photoURL: loggedUser.photoURL,

@@ -9,7 +9,7 @@ const AdminOrders = () => {
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/admin/orders/recent"); 
+      const res = await axios.get("https://gentle-vibe-server.vercel.app/api/admin/orders/recent"); 
       setOrders(res.data);
       setLoading(false);
     } catch (err) {

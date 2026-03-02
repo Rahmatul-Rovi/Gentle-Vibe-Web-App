@@ -14,7 +14,7 @@ const Shop = () => {
         const fetchProducts = async () => {
             setLoading(true);
             try {
-                let url = `http://localhost:5000/api/products`;
+                let url = `https://gentle-vibe-server.vercel.app/api/products`;
                 if (category) {
                     url += `?category=${category}`;
                 }

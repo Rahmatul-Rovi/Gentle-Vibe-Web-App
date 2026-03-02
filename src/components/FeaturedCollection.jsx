@@ -9,7 +9,7 @@ const FeaturedCollection = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/products');
+        const res = await axios.get('https://gentle-vibe-server.vercel.app/api/products');
         setProducts(res.data.slice(0, 4)); 
       } catch (err) {
         console.error("Error fetching featured products", err);

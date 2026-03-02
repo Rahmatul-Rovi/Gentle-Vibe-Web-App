@@ -6,7 +6,7 @@ const Testimonials = () => {
   const [reviews, setReviews] = useState([]);
 
  useEffect(() => {
-  axios.get('http://localhost:5000/api/reviews').then(res => setReviews(res.data));
+  axios.get('https://gentle-vibe-server.vercel.app/api/reviews').then(res => setReviews(res.data));
 }, []);
 
   return (

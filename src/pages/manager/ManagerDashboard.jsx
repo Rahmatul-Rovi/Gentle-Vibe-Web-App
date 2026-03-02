@@ -22,7 +22,7 @@ const ManagerDashboard = () => {
       if (showLoading) setLoading(true);
       setIsRefreshing(true);
 
-      const res = await axios.get("http://localhost:5000/api/admin/orders/recent");
+      const res = await axios.get("https://gentle-vibe-server.vercel.app/api/admin/orders/recent");
 
       // ১. POS (Offline) payment
       const offlineOnly = res.data.filter(order => order.isPOS === true);

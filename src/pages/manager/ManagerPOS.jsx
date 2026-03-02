@@ -40,7 +40,7 @@ const ManagerPOS = () => {
       if (query.length > 1) {
         try {
           const res = await axios.get(
-            `http://localhost:5000/api/pos/search-product?query=${query}`,
+            `https://gentle-vibe-server.vercel.app/api/pos/search-product?query=${query}`,
           );
           setSearchResults(res.data);
         } catch (err) {
@@ -112,7 +112,8 @@ const ManagerPOS = () => {
         totalAmount: totalToPay, 
       };
 
-      const res = await axios.post("http://localhost:5000/api/pos/create-bill", payload);
+      //https://gentle-vibe-server.vercel.app/
+      const res = await axios.post("https://gentle-vibe-server.vercel.app/api/pos/create-bill", payload);
 
       if (res.data.success) {
         await Swal.fire({ icon: "success", title: "Bill Created!", timer: 800, showConfirmButton: false });

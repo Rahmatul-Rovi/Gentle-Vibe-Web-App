@@ -15,7 +15,7 @@ const ProductCard = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const res = await axios.get('http://localhost:5000/api/products');
+                const res = await axios.get('https://gentle-vibe-server.vercel.app/api/products');
                 const productsWithQty = res.data.map(p => ({ ...p, qty: 1 }));
                 setProducts(productsWithQty);
                 setFilteredProducts(productsWithQty);

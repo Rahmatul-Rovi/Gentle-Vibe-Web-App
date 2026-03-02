@@ -8,7 +8,7 @@ const AdminReviews = () => {
 
   const fetchReviews = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/reviews');
+      const res = await axios.get('https://gentle-vibe-server.vercel.app/api/reviews');
       setReviews(res.data);
     } catch (err) {
       console.error(err);
@@ -32,7 +32,7 @@ const AdminReviews = () => {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete(`http://localhost:5000/api/admin/reviews/${id}`);
+        await axios.delete(`https://gentle-vibe-server.vercel.app/api/admin/reviews/${id}`);
         fetchReviews();
 
         Swal.fire({

@@ -9,7 +9,7 @@ const MakeAdmin = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/admin/users");
+      const res = await axios.get("https://gentle-vibe-server.vercel.app/api/admin/users");
       setUsers(res.data);
       setLoading(false);
     } catch (err) {
@@ -34,7 +34,7 @@ const MakeAdmin = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const res = await axios.patch(`http://localhost:5000/api/admin/users/${userId}/role`, { role: newRole });
+          const res = await axios.patch(`https://gentle-vibe-server.vercel.app/api/admin/users/${userId}/role`, { role: newRole });
           if (res.data.success) {
             setUsers(users.map(u => u._id === userId ? { ...u, role: newRole } : u));
             Swal.fire('Success!', `User is now an ${newRole}`, 'success');

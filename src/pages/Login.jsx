@@ -43,7 +43,7 @@ const Login = () => {
             await signInWithEmailAndPassword(auth, email, password);
             
             // Backend Login
-            const res = await axios.post('http://localhost:5000/api/login', { email, password });
+            const res = await axios.post('https://gentle-vibe-server.vercel.app/api/login', { email, password });
             const userData = res.data.user;
 
             localStorage.setItem('token', res.data.token);
@@ -74,7 +74,7 @@ const Login = () => {
             const loggedUser = result.user;
 
             // Check Google Login Registration
-            const res = await axios.post('http://localhost:5000/api/register', {
+            const res = await axios.post('https://gentle-vibe-server.vercel.app/api/register', {
                 name: loggedUser.displayName,
                 email: loggedUser.email,
                 photoURL: loggedUser.photoURL,

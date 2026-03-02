@@ -12,7 +12,7 @@ const ProductList = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const res = await axios.get('http://localhost:5000/api/products');
+                const res = await axios.get('https://gentle-vibe-server.vercel.app/api/products');
                 setProducts(res.data);
                 setFilteredProducts(res.data);
             } catch (err) {

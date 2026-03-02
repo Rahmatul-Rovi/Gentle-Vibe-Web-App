@@ -26,7 +26,7 @@ const UserDashboard = () => {
           return;
         }
 
-        const res = await axios.get(`http://localhost:5000/api/user/dashboard-summary/${userId}`);
+        const res = await axios.get(`https://gentle-vibe-server.vercel.app/api/user/dashboard-summary/${userId}`);
         setStats(res.data);
       } catch (err) {
         console.error("Dashboard API error:", err);

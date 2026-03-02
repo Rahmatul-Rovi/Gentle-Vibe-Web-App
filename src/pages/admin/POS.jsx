@@ -20,7 +20,7 @@ const POS = () => {
     const delayDebounceFn = setTimeout(async () => {
       if (query.length > 1) {
         try {
-          const res = await axios.get(`http://localhost:5000/api/pos/search-product?query=${query}`);
+          const res = await axios.get(`https://gentle-vibe-server.vercel.app/api/pos/search-product?query=${query}`);
           setSearchResults(res.data);
         } catch (err) {
           console.error("Search failed", err);
@@ -54,7 +54,7 @@ const POS = () => {
     if (cart.length === 0) return Swal.fire("Empty Cart", "Add some products first!", "warning");
 
     try {
-      const res = await axios.post("http://localhost:5000/api/pos/create-bill", {
+      const res = await axios.post("https://gentle-vibe-server.vercel.app/api/pos/create-bill", {
         items: cart,
         customerName: customer.name,
         customerPhone: customer.phone,
